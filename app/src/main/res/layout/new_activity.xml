@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.livefyre.comments.activities.NewActivity">
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/app_bar"/>
+    <ScrollView
+        android:background="@color/colorWhite"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:padding="16dp"
+            android:gravity="top"
+            android:layout_weight="1"
+            android:layout_alignParentTop="true"
+            android:background="@color/colorWhite"
+            android:layout_above="@+id/addPhotopLL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/addPhotopLL"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorTransBlack"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+        <TextView
+            android:drawableLeft="@drawable/cam"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            android:textStyle="bold"
+            android:text="@string/addPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>
