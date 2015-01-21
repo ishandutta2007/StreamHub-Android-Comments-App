@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAction">#FF9800</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="black87">#212121</color>
+    <color name="black54">#757575</color>
     <color name="colorBlack">#000000</color>
     <color name="colorTransBlack">#80000000</color>
 </resources>
