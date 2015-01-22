@@ -17,6 +17,7 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginRight="16dp"
             android:src="@drawable/ic_launcher" />
 
@@ -48,6 +49,7 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:visibility="gone"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_alignParentRight="true"
@@ -78,12 +80,40 @@
                     android:lineSpacingExtra="24dp"
                     android:text="sample"
                     android:textSize="14sp" />
-
-                <ImageView
-                    android:layout_width="30"
-                    android:layout_height="15"
+                <TextView
+                    android:textColor="#0f98ec"
+                    android:id="@+id/moderatorTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_launcher" />
+                    android:layout_marginLeft="16dp"
+                    android:lineSpacingExtra="24dp"
+                    android:text="moderator"
+                    android:textSize="12sp" />
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/featuredLL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/ic_launcher" />
+
+                    <TextView
+                        android:id="@+id/featuredTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:lineSpacingExtra="24dp"
+                        android:text="Featured"
+                        android:textSize="14sp" />
+                </LinearLayout>
             </RelativeLayout>
 
 

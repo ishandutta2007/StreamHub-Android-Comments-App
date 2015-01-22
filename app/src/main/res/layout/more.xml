@@ -29,8 +29,7 @@
             android:id="@+id/edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone" >
+            android:orientation="horizontal" >
 
             <ImageView
                 android:layout_width="24dp"
@@ -54,8 +53,7 @@
             android:id="@+id/feature"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone" >
+            android:orientation="horizontal" >
 
             <ImageView
                 android:layout_width="24dp"
@@ -81,15 +79,13 @@
             android:layout_height="1dp"
             android:layout_marginTop="7dp"
             android:layout_marginBottom="8dp"
-            android:background="#d6d6d6"
-            android:visibility="gone" />
+            android:background="#d6d6d6" />
 
         <LinearLayout
             android:id="@+id/flag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone" >
+            android:orientation="horizontal" >
 
             <ImageView
                 android:layout_width="24dp"
@@ -112,8 +108,7 @@
             android:id="@+id/bozo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone" >
+            android:orientation="horizontal" >
 
             <ImageView
                 android:layout_width="24dp"
@@ -136,8 +131,7 @@
             android:id="@+id/banUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone" >
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="24dp"
@@ -160,16 +154,14 @@
             android:id="@+id/delete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            >
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="16dp"
-                android:src="@drawable/icon_trash" />
+                android:src="@drawable/trash" />
 
             <TextView
                 android:layout_width="match_parent"

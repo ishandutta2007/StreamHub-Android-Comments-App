@@ -11,7 +11,6 @@ import com.livefyre.comments.R;
 
 public class CommentsActivity extends BaseActivity {
     Toolbar toolbar;
-    int selPo=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +21,7 @@ public class CommentsActivity extends BaseActivity {
         //disable title on toolbar
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         //app icon
-        toolbar.setNavigationIcon(R.drawable.back_arrow);
+        toolbar.setNavigationIcon(R.drawable.flame);
 
     }
     @Override
