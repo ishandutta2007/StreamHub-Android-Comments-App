@@ -1,6 +1,6 @@
 package com.livefyre.comments;
 
-public class Config {
+public class LFSConfig {
     public static String COLLECTION_ID = "47466506";
     public static String NETWORK_ID = "labs.fyre.co";
     public static String SITE_ID = "320568";

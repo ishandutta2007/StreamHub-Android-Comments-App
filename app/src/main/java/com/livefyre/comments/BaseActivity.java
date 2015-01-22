@@ -14,6 +14,8 @@ public class BaseActivity extends ActionBarActivity {
 
 	public static final String TAG = BaseActivity.class.getSimpleName();
 
+    protected   LFCApplication application = AppSingleton.getInstance().getApplication();
+
 	private AlertDialog alertDialog;
 	private ProgressDialog dialog;
 
