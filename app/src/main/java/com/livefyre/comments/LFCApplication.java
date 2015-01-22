@@ -19,7 +19,7 @@ public class LFCApplication extends Application {
 
 	private void init() {
 		sharedPreferences = getApplicationContext().getSharedPreferences(
-				Constants.SHARED_PREFERENCES, MODE_PRIVATE);
+				LFSAppConstants.SHARED_PREFERENCES, MODE_PRIVATE);
 	}
 
 	public void putDataInSharedPref(String key, String value) {

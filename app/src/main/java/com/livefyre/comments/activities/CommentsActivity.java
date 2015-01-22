@@ -22,7 +22,6 @@ public class CommentsActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         //app icon
         toolbar.setNavigationIcon(R.drawable.flame);
-
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

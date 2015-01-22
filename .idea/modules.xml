@@ -4,6 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/livefyre-comments-android.iml" filepath="$PROJECT_DIR$/livefyre-comments-android.iml" />
+<<<<<<< HEAD
+=======
+      <module fileurl="file://$PROJECT_DIR$/streamHubAndroidSDK/streamHubAndroidSDK.iml" filepath="$PROJECT_DIR$/streamHubAndroidSDK/streamHubAndroidSDK.iml" />
+>>>>>>> 10d3a14f91686c1e11350db9ccd4a583fd6a5842
     </modules>
   </component>
 </project>
