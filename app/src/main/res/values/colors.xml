@@ -7,8 +7,8 @@
     <color name="black87">#212121</color>
     <color name="black54">#757575</color>
     <color name="colorBlack">#000000</color>
-    <color name="blue">#0f98ec</color>
-    <color name="orange">#feb33b</color>
+    <color name="colorMod">#0f98ec</color>
+    <color name="colorFeature">#feb33b</color>
     <color name="magenta">#e85b3f</color>
     <color name="colorTransBlack">#80000000</color>
 </resources>

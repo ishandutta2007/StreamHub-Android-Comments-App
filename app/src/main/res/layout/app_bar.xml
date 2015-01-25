@@ -6,7 +6,7 @@
     android:background="@color/colorPrimary"
     app:theme="@style/ThemeOverlay.AppCompat.Dark"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    android:paddingRight="16dp">
+   >
     <TextView
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/comment_font_size_in_app_bar"

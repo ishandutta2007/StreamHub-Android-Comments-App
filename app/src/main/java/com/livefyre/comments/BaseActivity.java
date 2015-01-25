@@ -20,7 +20,6 @@ public class BaseActivity extends ActionBarActivity {
 	private ProgressDialog dialog;
 
     //application object
-    protected LFCApplication lfcApplication = AppSingleton.getInstance().getApplication();
 
 	protected void showProgressDialog(String message) {
 
@@ -42,32 +41,24 @@ public class BaseActivity extends ActionBarActivity {
 		}
 	}
 
-	protected void showAlert(String alertMsg, boolean type) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("");
-		builder.setMessage(alertMsg);
-		builder.setCancelable(false);
-		if (type) {
-			builder.setPositiveButton("OK", new OnClickListener() {
+    protected void showAlert(String alertMsg, DialogInterface.OnClickListener tryAgain) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("");
+        builder.setMessage(alertMsg);
+        builder.setCancelable(false);
 
-				@Override
-				public void onClick(DialogInterface arg0, int arg1) {
-					finish();
-				}
-			});
-		} else {
-			builder.setPositiveButton("OK", new OnClickListener() {
+        builder.setNegativeButton("CANCEL", new OnClickListener() {
 
-				@Override
-				public void onClick(DialogInterface arg0, int arg1) {
-					alertDialog.dismiss();
-				}
-			});
-		}
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                finish();
+            }
+        });
+        builder.setPositiveButton("TRY AGAIN", tryAgain);
 
-		alertDialog = builder.create();
-		alertDialog.show();
-	}
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
 
 	protected void showToast(String message) {
 		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT)

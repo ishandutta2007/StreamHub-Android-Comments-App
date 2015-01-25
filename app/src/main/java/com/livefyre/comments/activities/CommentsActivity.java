@@ -1,13 +1,17 @@
 package com.livefyre.comments.activities;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.widget.ListView;
 
 import com.livefyre.comments.BaseActivity;
 import com.livefyre.comments.LFSAppConstants;
 import com.livefyre.comments.LFSConfig;
 import com.livefyre.comments.R;
+import com.livefyre.comments.adapter.CommentsAdapter;
+import com.livefyre.comments.parsers.ContentParser;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONException;
@@ -23,6 +27,8 @@ public class CommentsActivity extends BaseActivity {
 
 
     Toolbar toolbar;
+
+    ListView commentsLV;
 
     private String adminClintId = "No";
 
@@ -50,11 +56,13 @@ public class CommentsActivity extends BaseActivity {
 
     private void pullViews() {
         toolbar = (Toolbar) findViewById(R.id.app_bar);
+
+        commentsLV= (ListView) findViewById(R.id.commentsLV);
     }
 
     void adminClintCall() {
         if (!isNetworkAvailable()) {
-            showToast("Network Not Available");
+            showAlert("No connection available", tryAgain);
             return;
         } else {
             showProgressDialog();
@@ -69,11 +77,12 @@ public class CommentsActivity extends BaseActivity {
         }
 
     }
+
     public class AdminCallback extends JsonHttpResponseHandler {
 
         public void onSuccess(JSONObject AdminClintJsonResponseObject) {
             JSONObject data;
-            application.printLog(true,TAG+"-AdminCallback-onSuccess",AdminClintJsonResponseObject.toString());
+            application.printLog(true, TAG + "-AdminCallback-onSuccess", AdminClintJsonResponseObject.toString());
             try {
                 data = AdminClintJsonResponseObject.getJSONObject("data");
 
@@ -112,7 +121,7 @@ public class CommentsActivity extends BaseActivity {
         public void onFailure(Throwable error, String content) {
             super.onFailure(error, content);
             // Log.d("adminClintCall", "Fail");
-            application.printLog(true,TAG+"-AdminCallback-onFailure",error.toString());
+            application.printLog(true, TAG + "-AdminCallback-onFailure", error.toString());
 
             bootstrapClientCall();
         }
@@ -133,28 +142,33 @@ public class CommentsActivity extends BaseActivity {
     private class InitCallback extends JsonHttpResponseHandler {
 
         public void onSuccess(String data) {
-            application.printLog(true,TAG+"-InitCallback-onSuccess",data.toString());
-            try {
-                buildReviewList(new JSONObject(data));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            application.printLog(false, TAG + "-InitCallback-onSuccess", data.toString());
+
+            buildReviewList(data);
+
         }
 
         @Override
         public void onFailure(Throwable error, String content) {
             super.onFailure(error, content);
-            application.printLog(true,TAG+"-InitCallback-onFailure",error.toString());
+            application.printLog(true, TAG + "-InitCallback-onFailure", error.toString());
         }
 
     }
-    void buildReviewList(JSONObject data) {
-//        try {
-//            content = new ContentParser(data);
-//            content.getContentFromResponce(this);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-    }
 
+    void buildReviewList(String data) {
+
+        ContentParser content = new ContentParser(data.toString());
+        content.getContentFromResponse(this);
+        CommentsAdapter mCommentsAdapter = new CommentsAdapter(this, application);
+        commentsLV.setAdapter(mCommentsAdapter);
+        dismissProgressDialog();
+    }
+    DialogInterface.OnClickListener tryAgain= new DialogInterface.OnClickListener() {
+
+        @Override
+        public void onClick(DialogInterface arg0, int arg1) {
+            adminClintCall();
+        }
+    };
 }
