@@ -31,7 +31,7 @@ import java.util.HashMap;
 import livefyre.streamhub.LFSConstants;
 import livefyre.streamhub.WriteClient;
 
-public class InputActivity extends BaseActivity {
+public class NewActivity extends BaseActivity {
     Toolbar toolbar;
     TextView commentTv;
     LinearLayout attachImageLL;
@@ -44,7 +44,7 @@ public class InputActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.input_activity);
+        setContentView(R.layout.new_activity);
 
 
         pullViews();
@@ -95,7 +95,7 @@ public class InputActivity extends BaseActivity {
     View.OnClickListener attachImageLLListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(InputActivity.this, FilePicker.class);
+            Intent intent = new Intent(NewActivity.this, FilePicker.class);
             FilePickerAPI.setKey(LFSConfig.FILEPICKER_API_KEY);
 
             startActivityForResult(intent, FilePickerAPI.REQUEST_CODE_GETFILE);

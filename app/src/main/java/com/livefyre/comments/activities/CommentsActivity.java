@@ -198,7 +198,7 @@ public class CommentsActivity extends BaseActivity {
     View.OnClickListener postNewCommentListener=new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent newCommentIntent= new Intent(CommentsActivity.this,InputActivity.class);
+            Intent newCommentIntent= new Intent(CommentsActivity.this,NewActivity.class);
             startActivity(newCommentIntent);
         }
     };
