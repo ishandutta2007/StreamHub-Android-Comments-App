@@ -31,6 +31,10 @@ public class BaseActivity extends ActionBarActivity {
 
 	}
 
+    protected void showProgressDialog() {
+        showProgressDialog("Please Wait..");
+    }
+
 	protected void dismissProgressDialog() {
 		try {
 			dialog.dismiss();

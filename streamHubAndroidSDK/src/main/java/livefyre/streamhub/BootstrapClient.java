@@ -14,6 +14,7 @@ import java.util.*;
  * @author zjj
  */
 public class BootstrapClient {
+    public static final String TAG = BootstrapClient.class.getSimpleName();
     /**
      * Performs a network request on a different thread and delivers a message to the callback.
      * A JSON object with the results will be bound to the message.
