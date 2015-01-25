@@ -5,13 +5,37 @@
     android:layout_height="56dp"
     android:background="@color/colorPrimary"
     app:theme="@style/ThemeOverlay.AppCompat.Dark"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-   >
-    <TextView
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/comment_font_size_in_app_bar"
-        android:text="@string/comments_str"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:id="@+id/activityIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/activityIcon"
+            android:id="@+id/activityTitle"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/comment_font_size_in_app_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp"
+            android:layout_marginRight="16dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:visibility="gone"
+            android:id="@+id/actionTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
 </android.support.v7.widget.Toolbar>

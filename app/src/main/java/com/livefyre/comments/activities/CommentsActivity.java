@@ -2,9 +2,14 @@ package com.livefyre.comments.activities;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.livefyre.comments.BaseActivity;
 import com.livefyre.comments.LFSAppConstants;
@@ -30,7 +35,11 @@ public class CommentsActivity extends BaseActivity {
 
     ListView commentsLV;
 
+    ImageButton postNewCommentIv;
+
     private String adminClintId = "No";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,25 +48,39 @@ public class CommentsActivity extends BaseActivity {
 
         pullViews();
 
+        setListenersToViews();
+
         buildToolBar();
 
         adminClintCall();
 
     }
 
+    private void setListenersToViews() {
+        postNewCommentIv.setOnClickListener(postNewCommentListener);
+    }
+
     private void buildToolBar() {
+
+
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
         //toolbar
         setSupportActionBar(toolbar);
         //disable title on toolbar
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        //app icon
-        toolbar.setNavigationIcon(R.drawable.flame);
+        ImageView homeIcon = (ImageView) findViewById(R.id.activityIcon);
+
+        TextView activityName = (TextView) findViewById(R.id.activityTitle);
+        homeIcon.setBackgroundResource(R.drawable.flame);
+        activityName.setText("Comments");
+
     }
 
     private void pullViews() {
-        toolbar = (Toolbar) findViewById(R.id.app_bar);
 
         commentsLV= (ListView) findViewById(R.id.commentsLV);
+
+        postNewCommentIv = (ImageButton) findViewById(R.id.postNewCommentIv);
     }
 
     void adminClintCall() {
@@ -171,4 +194,13 @@ public class CommentsActivity extends BaseActivity {
             adminClintCall();
         }
     };
+
+    View.OnClickListener postNewCommentListener=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent newCommentIntent= new Intent(CommentsActivity.this,InputActivity.class);
+            startActivity(newCommentIntent);
+        }
+    };
+
 }
