@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -39,8 +41,6 @@ public class CommentsActivity extends BaseActivity {
 
     private String adminClintId = "No";
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +58,7 @@ public class CommentsActivity extends BaseActivity {
 
     private void setListenersToViews() {
         postNewCommentIv.setOnClickListener(postNewCommentListener);
+        commentsLV.setOnItemClickListener(commentsLVListener);
     }
 
     private void buildToolBar() {
@@ -78,7 +79,7 @@ public class CommentsActivity extends BaseActivity {
 
     private void pullViews() {
 
-        commentsLV= (ListView) findViewById(R.id.commentsLV);
+        commentsLV = (ListView) findViewById(R.id.commentsLV);
 
         postNewCommentIv = (ImageButton) findViewById(R.id.postNewCommentIv);
     }
@@ -187,7 +188,8 @@ public class CommentsActivity extends BaseActivity {
         commentsLV.setAdapter(mCommentsAdapter);
         dismissProgressDialog();
     }
-    DialogInterface.OnClickListener tryAgain= new DialogInterface.OnClickListener() {
+
+    DialogInterface.OnClickListener tryAgain = new DialogInterface.OnClickListener() {
 
         @Override
         public void onClick(DialogInterface arg0, int arg1) {
@@ -195,12 +197,21 @@ public class CommentsActivity extends BaseActivity {
         }
     };
 
-    View.OnClickListener postNewCommentListener=new View.OnClickListener() {
+    View.OnClickListener postNewCommentListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent newCommentIntent= new Intent(CommentsActivity.this,NewActivity.class);
+            Intent newCommentIntent = new Intent(CommentsActivity.this, NewActivity.class);
             startActivity(newCommentIntent);
         }
     };
+    OnItemClickListener commentsLVListener = new OnItemClickListener() {
 
+        @Override
+        public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+                                long arg3) {
+            Intent detailViewIntent = new Intent(CommentsActivity.this,CommentActivity.class);
+            detailViewIntent.putExtra("position", position);
+            startActivity(detailViewIntent);
+        }
+    };
 }

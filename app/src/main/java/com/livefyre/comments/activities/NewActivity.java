@@ -46,7 +46,6 @@ public class NewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_activity);
 
-
         pullViews();
 
         setListenersToViews();

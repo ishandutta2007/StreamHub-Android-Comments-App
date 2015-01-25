@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorWhite">
 
     <include
         android:id="@+id/app_bar"
@@ -13,6 +14,55 @@
         layout="@layout/comments_list_item" />
 
     <RelativeLayout
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:id="@+id/commentActionsRL"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></RelativeLayout>
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_marginRight="8dp"
+            android:layout_centerVertical="true"
+            android:id="@+id/likeIv"
+            android:src="@drawable/like"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:layout_marginRight="32dp"
+            android:textColor="@color/black54"
+            android:textSize="14sp"
+            android:id="@+id/likeCountTv"
+            android:layout_centerVertical="true"
+            android:text="1"
+            android:layout_toRightOf="@+id/likeIv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_marginRight="8dp"
+            android:layout_toRightOf="@+id/likeCountTv"
+            android:layout_centerVertical="true"
+            android:id="@+id/replyIv"
+            android:src="@drawable/reply"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:textColor="@color/black54"
+            android:textSize="14sp"
+            android:id="@+id/replyTv"
+            android:layout_toRightOf="@+id/replyIv"
+            android:text="REPLY"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_alignParentRight="true"
+            android:src="@drawable/more"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+
+    </RelativeLayout>
 </LinearLayout>
