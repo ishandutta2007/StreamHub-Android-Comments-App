@@ -13,7 +13,7 @@
 
         <ImageView
             android:layout_centerVertical="true"
-            android:layout_marginRight="16dp"
+            android:layout_marginRight="32dp"
             android:id="@+id/activityIcon"
             android:layout_width="24dp"
             android:layout_height="24dp" />

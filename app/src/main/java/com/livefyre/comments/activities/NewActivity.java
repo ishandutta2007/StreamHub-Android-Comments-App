@@ -18,8 +18,10 @@ import com.filepicker.sdk.FilePickerAPI;
 import com.livefyre.comments.BaseActivity;
 import com.livefyre.comments.LFSAppConstants;
 import com.livefyre.comments.LFSConfig;
+import com.livefyre.comments.LFUtils;
 import com.livefyre.comments.R;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -29,6 +31,7 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 
+import livefyre.streamhub.LFSActions;
 import livefyre.streamhub.LFSConstants;
 import livefyre.streamhub.WriteClient;
 
@@ -44,17 +47,16 @@ public class NewActivity extends BaseActivity {
     RelativeLayout deleteCapturedImage;
     JSONObject imgObj;
     //id-selected comment Id Used for editing and new reply
-    String imgUrl, purpose, id;
+    String imgUrl, purpose, id,body;
     boolean isEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_activity);
+        pullViews();
 
         getDataFromIntent();
-
-        pullViews();
 
         setListenersToViews();
 
@@ -64,7 +66,19 @@ public class NewActivity extends BaseActivity {
     private void getDataFromIntent() {
         Intent intent = getIntent();
         purpose = intent.getStringExtra(LFSAppConstants.PURPOSE);
-        id = intent.getStringExtra(LFSAppConstants.ID);
+
+        if (purpose.equals(LFSAppConstants.NEW_COMMENT)){
+
+        }
+        else if (purpose.equals(LFSAppConstants.NEW_REPLY)) {
+            id = intent.getStringExtra(LFSAppConstants.ID);
+        } else if (purpose.equals(LFSAppConstants.EDIT)) {
+            id = intent.getStringExtra(LFSAppConstants.ID);
+            body = intent.getStringExtra(LFSAppConstants.BODY);
+            commentEt.setText(LFUtils.trimTrailingWhitespace(Html
+                            .fromHtml(body)),
+                    TextView.BufferType.SPANNABLE);
+        }
     }
 
     private void pullViews() {
@@ -90,7 +104,7 @@ public class NewActivity extends BaseActivity {
         //Activity Icon
         ImageView homeIcon = (ImageView) findViewById(R.id.activityIcon);
         homeIcon.setOnClickListener(homeIconListener);
-        homeIcon.setBackgroundResource(R.drawable.close);
+        homeIcon.setBackgroundResource(R.drawable.close_b);
 
         //Activity Name
         TextView activityName = (TextView) findViewById(R.id.activityTitle);
@@ -100,7 +114,7 @@ public class NewActivity extends BaseActivity {
         else if (purpose.equals(LFSAppConstants.NEW_REPLY)) {
             activityName.setText("Reply");
             attachImageLL.setVisibility(View.GONE);//Hide Image Selection option
-        } else {
+        } else if (purpose.equals(LFSAppConstants.EDIT)) {
             activityName.setText("Edit");
             attachImageLL.setVisibility(View.GONE);//Hide Image Selection option
         }
@@ -136,7 +150,7 @@ public class NewActivity extends BaseActivity {
     void postNewReply(String body) {
         showProgressDialog();
 
-        if (!isEdit) {
+         if (purpose.equals(LFSAppConstants.NEW_REPLY)) {
             Log.d("REPLY", "IN NEW REPLY");
             HashMap<String, Object> perameters = new HashMap<>();
             perameters.put(LFSConstants.LFSPostBodyKey, body);
@@ -151,16 +165,16 @@ public class NewActivity extends BaseActivity {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-        } else {
-//            Log.d("EDIT", "IN EDIT REPLY");
-//
-//            RequestParams perameters = new RequestParams();
-//            perameters.put(LFSConstants.LFSPostBodyKey, body);
-//            perameters.put(LFSConstants.LFSPostUserTokenKey,
-//                    LFSConfig.USER_TOKEN);
-//            WriteClient.postAction(LFSConfig.COLLECTION_ID, id,
-//                    LFSConfig.USER_TOKEN, LFSActions.EDIT, perameters,
-//                    new editCallback());
+        } else if (purpose.equals(LFSAppConstants.EDIT)) {
+            Log.d("EDIT", "IN EDIT REPLY");
+
+            RequestParams perameters = new RequestParams();
+            perameters.put(LFSConstants.LFSPostBodyKey, body);
+            perameters.put(LFSConstants.LFSPostUserTokenKey,
+                    LFSConfig.USER_TOKEN);
+            WriteClient.postAction(LFSConfig.COLLECTION_ID, id,
+                    LFSConfig.USER_TOKEN, LFSActions.EDIT, perameters,
+                    new editCallback());
 
         }
     }

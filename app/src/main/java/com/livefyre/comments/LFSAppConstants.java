@@ -16,4 +16,6 @@ public class LFSAppConstants {
     public static String PURPOSE ="purpose";
     public static String NEW_REPLY ="newReply";
     public static String NEW_COMMENT ="newComment";
+    public static String EDIT="Edit";
+    public static String BODY="body";
 }
