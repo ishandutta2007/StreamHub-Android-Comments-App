@@ -516,7 +516,6 @@ import java.util.regex.Pattern;
 
         //TODO PATCH! Only for app style reasons
 //        ActionBar actionBar = getActionBar();
-        //parent_app_name = myIntent.getExtras().getString("parent_app");
 //        actionBar.setTitle(parent_app_name);
 //        actionBar.setDisplayHomeAsUpEnabled(true);
 //        View appIcon = findViewById(android.R.id.home);

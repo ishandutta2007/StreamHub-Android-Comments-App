@@ -109,7 +109,7 @@ public class NewActivity extends BaseActivity {
         public void onClick(View v) {
             String description = commentTv.getText().toString();
             if (description.length() == 0) {
-                showAlert("Please Enter Description.", tryAgain);
+                showAlert("Please Enter Description.","TRY AGAIN",tryAgain);
                 return;
             }
             String descriptionHTML = Html.toHtml((android.text.Spanned) commentTv.getText());
@@ -145,7 +145,7 @@ public class NewActivity extends BaseActivity {
 
         public void onSuccess(JSONObject data) {
             dismissProgressDialog();
-            showAlert("Comment Posted Successfully.", tryAgain);
+            showAlert("Comment Posted Successfully.", "New Comment",newComment);
         }
 
         @Override
@@ -158,13 +158,13 @@ public class NewActivity extends BaseActivity {
                 JSONObject errorJson = new JSONObject(content);
                 if (!errorJson.isNull("msg")) {
 
-                    showAlert(errorJson.getString("msg"), tryAgain);
+                    showAlert(errorJson.getString("msg"),"TRY AGAIN",tryAgain);
                 } else {
-                    showAlert("Something went wrong.", tryAgain);
+                    showAlert("Something went wrong.","TRY AGAIN",tryAgain);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                showAlert("Something went wrong.", tryAgain);
+                showAlert("Something went wrong.","TRY AGAIN" ,tryAgain);
 
             }
 
@@ -185,20 +185,13 @@ public class NewActivity extends BaseActivity {
         }
     };
 
-    DialogInterface.OnClickListener tryAgain = new DialogInterface.OnClickListener() {
-
-        @Override
-        public void onClick(DialogInterface arg0, int arg1) {
-
-        }
-    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FilePickerAPI.REQUEST_CODE_GETFILE) {
             if (resultCode != RESULT_OK) {
                 // Result was cancelled by the user or there was an error
-                showAlert("Something Went Wrong.", tryAgain);
+                showAlert("No Image Selected.","SELECT IMAGE",selectImageDialogAction);
                 attachImageLL.setVisibility(View.VISIBLE);
                 attacheImageFL.setVisibility(View.GONE);
                 return;
@@ -211,7 +204,6 @@ public class NewActivity extends BaseActivity {
             application.printLog(true, TAG + "Uploaded Image URL", imgUrl + " ");
 
             try {
-
                 imgObj = new JSONObject();
                 imgObj.put("link", imgUrl);
                 imgObj.put("provider_name", "LivefyreFilePicker");
@@ -225,7 +217,6 @@ public class NewActivity extends BaseActivity {
 
                 }
 
-
             } catch (JSONException e) {
                 e.printStackTrace();
 
@@ -233,4 +224,31 @@ public class NewActivity extends BaseActivity {
 
         }
     }
+
+    DialogInterface.OnClickListener selectImageDialogAction = new DialogInterface.OnClickListener() {
+
+        @Override
+        public void onClick(DialogInterface arg0, int arg1) {
+            Intent intent = new Intent(NewActivity.this, FilePicker.class);
+            FilePickerAPI.setKey(LFSConfig.FILEPICKER_API_KEY);
+            startActivityForResult(intent, FilePickerAPI.REQUEST_CODE_GETFILE);
+        }
+    };
+    DialogInterface.OnClickListener newComment = new DialogInterface.OnClickListener() {
+
+        @Override
+        public void onClick(DialogInterface arg0, int arg1) {
+            Intent intent = new Intent(NewActivity.this, NewActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+    };
+    DialogInterface.OnClickListener tryAgain = new DialogInterface.OnClickListener() {
+
+        @Override
+        public void onClick(DialogInterface arg0, int arg1) {
+
+        }
+    };
+
 }

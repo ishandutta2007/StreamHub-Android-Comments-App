@@ -86,7 +86,7 @@ public class CommentsActivity extends BaseActivity {
 
     void adminClintCall() {
         if (!isNetworkAvailable()) {
-            showAlert("No connection available", tryAgain);
+            showAlert("No connection available","TRY AGAIN",tryAgain);
             return;
         } else {
             showProgressDialog();

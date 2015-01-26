@@ -41,7 +41,7 @@ public class BaseActivity extends ActionBarActivity {
 		}
 	}
 
-    protected void showAlert(String alertMsg, DialogInterface.OnClickListener tryAgain) {
+    protected void showAlert(String alertMsg,String stay, DialogInterface.OnClickListener tryAgain) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("");
         builder.setMessage(alertMsg);
@@ -54,7 +54,7 @@ public class BaseActivity extends ActionBarActivity {
                 finish();
             }
         });
-        builder.setPositiveButton("TRY AGAIN", tryAgain);
+        builder.setPositiveButton(stay, tryAgain);
 
         alertDialog = builder.create();
         alertDialog.show();
