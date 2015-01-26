@@ -50,7 +50,7 @@ public class WriteClient {
 	 *            The id of the content to which this content is a reply. If not
 	 *            necessary (that is, this is a top level post, then set to
 	 *            empty string ("").
-	 * @param token
+	 * @param userToken
 	 *            The token of the logged in user.
 	 * @param body
 	 *            A string version of the HTML body

@@ -19,11 +19,13 @@ public class CommentActivity extends BaseActivity {
     Toolbar toolbar;
     TextView authorNameTv, postedDateOrTime, commentBody, moderatorTv, likesTv;
 
-    LinearLayout featureLL;
+    LinearLayout featureLL,likeLL,newReplyLL;
 
     ImageView avatarIv, imageAttachedToCommentIv;
 
     private int position;
+
+
 
     ContentBean comment;
 
@@ -68,13 +70,15 @@ public class CommentActivity extends BaseActivity {
         likesTv = (TextView) findViewById(R.id.likesTv);
         moderatorTv = (TextView) findViewById(R.id.moderatorTv);
         featureLL = (LinearLayout) findViewById(R.id.featureLL);
-
+        newReplyLL = (LinearLayout) findViewById(R.id.newReplyLL);
+        likeLL = (LinearLayout) findViewById(R.id.likeLL);
         avatarIv = (ImageView) findViewById(R.id.avatarIv);
         imageAttachedToCommentIv = (ImageView) findViewById(R.id.imageAttachedToCommentIv);
 
     }
 
     private void setListenersToViews() {
+        newReplyLL.setOnClickListener(newReplyLLListener);
     }
 
     private void buildToolBar() {
@@ -90,6 +94,8 @@ public class CommentActivity extends BaseActivity {
 
         //Activity Name
         TextView activityName = (TextView) findViewById(R.id.activityTitle);
+
+
         activityName.setText("Comment");
 
     }
@@ -101,5 +107,13 @@ public class CommentActivity extends BaseActivity {
         }
     };
 
-
+    View.OnClickListener newReplyLLListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(CommentActivity.this, NewActivity.class);
+            intent.putExtra(LFSAppConstants.PURPOSE,LFSAppConstants.NEW_REPLY);
+            intent.putExtra(LFSAppConstants.ID,application.getContentCollection().get(position).getId());
+            startActivity(intent);
+        }
+    };
 }

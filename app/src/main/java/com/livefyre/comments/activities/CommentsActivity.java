@@ -200,8 +200,9 @@ public class CommentsActivity extends BaseActivity {
     View.OnClickListener postNewCommentListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent newCommentIntent = new Intent(CommentsActivity.this, NewActivity.class);
-            startActivity(newCommentIntent);
+            Intent intent = new Intent(CommentsActivity.this, NewActivity.class);
+            intent.putExtra(LFSAppConstants.PURPOSE,LFSAppConstants.NEW_COMMENT);
+            startActivity(intent);
         }
     };
     OnItemClickListener commentsLVListener = new OnItemClickListener() {

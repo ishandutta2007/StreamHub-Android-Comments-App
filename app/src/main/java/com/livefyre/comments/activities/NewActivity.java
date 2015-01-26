@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.filepicker.sdk.FilePicker;
 import com.filepicker.sdk.FilePickerAPI;
 import com.livefyre.comments.BaseActivity;
+import com.livefyre.comments.LFSAppConstants;
 import com.livefyre.comments.LFSConfig;
 import com.livefyre.comments.R;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -36,18 +37,22 @@ public class NewActivity extends BaseActivity {
 
 
     Toolbar toolbar;
-    TextView commentTv;
+    TextView commentEt;
     LinearLayout attachImageLL;
     FrameLayout attacheImageFL;
     ImageView capturedImage;
     RelativeLayout deleteCapturedImage;
     JSONObject imgObj;
-    String imgUrl;
+    //id-selected comment Id Used for editing and new reply
+    String imgUrl, purpose, id;
+    boolean isEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_activity);
+
+        getDataFromIntent();
 
         pullViews();
 
@@ -56,13 +61,18 @@ public class NewActivity extends BaseActivity {
         buildToolBar();
     }
 
+    private void getDataFromIntent() {
+        Intent intent = getIntent();
+        purpose = intent.getStringExtra(LFSAppConstants.PURPOSE);
+        id = intent.getStringExtra(LFSAppConstants.ID);
+    }
 
     private void pullViews() {
         attachImageLL = (LinearLayout) findViewById(R.id.attachImageLL);
         attacheImageFL = (FrameLayout) findViewById(R.id.attacheImageFL);
         capturedImage = (ImageView) findViewById(R.id.capturedImage);
         deleteCapturedImage = (RelativeLayout) findViewById(R.id.deleteCapturedImage);
-        commentTv = (TextView) findViewById(R.id.commentTv);
+        commentEt = (TextView) findViewById(R.id.commentEt);
     }
 
     private void setListenersToViews() {
@@ -84,8 +94,16 @@ public class NewActivity extends BaseActivity {
 
         //Activity Name
         TextView activityName = (TextView) findViewById(R.id.activityTitle);
-        activityName.setText("New Comment");
 
+        if (purpose.equals(LFSAppConstants.NEW_COMMENT))
+            activityName.setText("New Comment");
+        else if (purpose.equals(LFSAppConstants.NEW_REPLY)) {
+            activityName.setText("Reply");
+            attachImageLL.setVisibility(View.GONE);//Hide Image Selection option
+        } else {
+            activityName.setText("Edit");
+            attachImageLL.setVisibility(View.GONE);//Hide Image Selection option
+        }
         //Action
         TextView actionTv = (TextView) findViewById(R.id.actionTv);
         actionTv.setVisibility(View.VISIBLE);
@@ -94,35 +112,9 @@ public class NewActivity extends BaseActivity {
 
     }
 
-    View.OnClickListener attachImageLLListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(NewActivity.this, FilePicker.class);
-            FilePickerAPI.setKey(LFSConfig.FILEPICKER_API_KEY);
-
-            startActivityForResult(intent, FilePickerAPI.REQUEST_CODE_GETFILE);
-        }
-    };
-
-    View.OnClickListener actionTvListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String description = commentTv.getText().toString();
-            if (description.length() == 0) {
-                showAlert("Please Enter Description.","TRY AGAIN",tryAgain);
-                return;
-            }
-            String descriptionHTML = Html.toHtml((android.text.Spanned) commentTv.getText());
-            postNewComment(descriptionHTML);
-
-        }
-    };
 
     void postNewComment(String body) {
-        if (!isNetworkAvailable()) {
-            showToast("Network Not Available");
-            return;
-        }
+
         showProgressDialog();
         HashMap<String, Object> perameters = new HashMap<>();
         perameters.put(LFSConstants.LFSPostBodyKey, body);
@@ -130,7 +122,7 @@ public class NewActivity extends BaseActivity {
                 LFSConstants.LFSPostTypeComment);
         perameters.put(LFSConstants.LFSPostUserTokenKey, LFSConfig.USER_TOKEN);
         if (imgObj != null)
-            perameters.put(LFSConstants.LFSPostAttachment,
+            perameters.put(LFSConstants.LFSPostAttachmentsKey,
                     (new JSONArray().put(imgObj)).toString());
         try {
             WriteClient.postContent(LFSConfig.NETWORK_ID,
@@ -141,11 +133,45 @@ public class NewActivity extends BaseActivity {
         }
     }
 
+    void postNewReply(String body) {
+        showProgressDialog();
+
+        if (!isEdit) {
+            Log.d("REPLY", "IN NEW REPLY");
+            HashMap<String, Object> perameters = new HashMap<>();
+            perameters.put(LFSConstants.LFSPostBodyKey, body);
+            perameters.put(LFSConstants.LFSPostType,
+                    LFSConstants.LFSPostTypeReply);
+            perameters.put(LFSConstants.LFSPostUserTokenKey,
+                    LFSConfig.USER_TOKEN);
+            try {
+                WriteClient.postContent(LFSConfig.NETWORK_ID,
+                        LFSConfig.COLLECTION_ID, id, LFSConfig.USER_TOKEN,
+                        perameters, new newReplyCallback());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        } else {
+//            Log.d("EDIT", "IN EDIT REPLY");
+//
+//            RequestParams perameters = new RequestParams();
+//            perameters.put(LFSConstants.LFSPostBodyKey, body);
+//            perameters.put(LFSConstants.LFSPostUserTokenKey,
+//                    LFSConfig.USER_TOKEN);
+//            WriteClient.postAction(LFSConfig.COLLECTION_ID, id,
+//                    LFSConfig.USER_TOKEN, LFSActions.EDIT, perameters,
+//                    new editCallback());
+
+        }
+    }
+
+    //Call backs
+    //New Comment
     public class writeclientCallback extends JsonHttpResponseHandler {
 
         public void onSuccess(JSONObject data) {
             dismissProgressDialog();
-            showAlert("Comment Posted Successfully.", "New Comment",newComment);
+            showAlert("Comment Posted Successfully.", "OK", null);
         }
 
         @Override
@@ -158,18 +184,108 @@ public class NewActivity extends BaseActivity {
                 JSONObject errorJson = new JSONObject(content);
                 if (!errorJson.isNull("msg")) {
 
-                    showAlert(errorJson.getString("msg"),"TRY AGAIN",tryAgain);
+                    showAlert(errorJson.getString("msg"), "TRY AGAIN", tryAgain);
                 } else {
-                    showAlert("Something went wrong.","TRY AGAIN",tryAgain);
+                    showAlert("Something went wrong.", "TRY AGAIN", tryAgain);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                showAlert("Something went wrong.","TRY AGAIN" ,tryAgain);
+                showAlert("Something went wrong.", "TRY AGAIN", tryAgain);
 
             }
 
         }
     }
+
+    //New Reply
+    public class newReplyCallback extends JsonHttpResponseHandler {
+
+        public void onSuccess(JSONObject data) {
+            dismissProgressDialog();
+            showAlert("Reply Posted Successfully.", "OK", null);
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", 1);
+            setResult(RESULT_OK, returnIntent);
+        }
+
+        @Override
+        public void onFailure(Throwable error, String content) {
+            super.onFailure(error, content);
+            dismissProgressDialog();
+            try {
+                JSONObject errorJson = new JSONObject(content);
+                if (!errorJson.isNull("msg")) {
+                    showAlert(errorJson.getString("msg"), "TRY AGAIN", tryAgain);
+
+                } else {
+                    showAlert("Something went wrong.", "TRY AGAIN", tryAgain);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                showAlert("Something went wrong.", "TRY AGAIN", tryAgain);
+
+            }
+        }
+
+    }
+
+    // Edit Comment
+    private class editCallback extends JsonHttpResponseHandler {
+
+        public void onSuccess(JSONObject data) {
+            dismissProgressDialog();
+            showAlert("Reply Edited Successfully.", "OK", null);
+        }
+
+        @Override
+        public void onFailure(Throwable error, String content) {
+            super.onFailure(error, content);
+            dismissProgressDialog();
+            try {
+                JSONObject errorJson = new JSONObject(content);
+                if (!errorJson.isNull("msg")) {
+                    showAlert(errorJson.getString("msg"), "TRY AGAIN", tryAgain);
+
+                } else {
+                    showAlert("Something went wrong.", "TRY AGAIN", tryAgain);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                showAlert("Something went wrong.", "TRY AGAIN", tryAgain);
+            }
+        }
+
+    }
+
+    // Listeners
+    View.OnClickListener actionTvListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            if (!isNetworkAvailable()) {
+                showAlert("No connection available", "TRY AGAIN", tryAgain);
+                return;
+            }
+
+            String description = commentEt.getText().toString();
+
+            if (description.length() == 0) {
+                showAlert("Please enter text to post.", "TRY AGAIN", tryAgain);
+                return;
+            }
+
+            if (purpose.equals(LFSAppConstants.NEW_COMMENT)) {
+
+                String descriptionHTML = Html.toHtml((android.text.Spanned) commentEt.getText());
+                postNewComment(descriptionHTML);
+            } else {
+                String htmlReplyText = Html.toHtml((android.text.Spanned) commentEt.getText());
+                postNewReply(htmlReplyText);
+            }
+
+
+        }
+    };
 
     View.OnClickListener homeIconListener = new View.OnClickListener() {
         @Override
@@ -177,6 +293,7 @@ public class NewActivity extends BaseActivity {
             finish();
         }
     };
+
     View.OnClickListener deleteCapturedImageListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -185,13 +302,40 @@ public class NewActivity extends BaseActivity {
         }
     };
 
+    View.OnClickListener attachImageLLListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(NewActivity.this, FilePicker.class);
+            FilePickerAPI.setKey(LFSConfig.FILEPICKER_API_KEY);
 
+            startActivityForResult(intent, FilePickerAPI.REQUEST_CODE_GETFILE);
+        }
+    };
+
+    // Dialog Listeners
+    DialogInterface.OnClickListener selectImageDialogAction = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface arg0, int arg1) {
+            Intent intent = new Intent(NewActivity.this, FilePicker.class);
+            FilePickerAPI.setKey(LFSConfig.FILEPICKER_API_KEY);
+            startActivityForResult(intent, FilePickerAPI.REQUEST_CODE_GETFILE);
+        }
+    };
+
+    DialogInterface.OnClickListener tryAgain = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface arg0, int arg1) {
+
+        }
+    };
+
+    //On Image Selected
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FilePickerAPI.REQUEST_CODE_GETFILE) {
             if (resultCode != RESULT_OK) {
                 // Result was cancelled by the user or there was an error
-                showAlert("No Image Selected.","SELECT IMAGE",selectImageDialogAction);
+                showAlert("No Image Selected.", "SELECT IMAGE", selectImageDialogAction);
                 attachImageLL.setVisibility(View.VISIBLE);
                 attacheImageFL.setVisibility(View.GONE);
                 return;
@@ -221,34 +365,6 @@ public class NewActivity extends BaseActivity {
                 e.printStackTrace();
 
             }
-
         }
     }
-
-    DialogInterface.OnClickListener selectImageDialogAction = new DialogInterface.OnClickListener() {
-
-        @Override
-        public void onClick(DialogInterface arg0, int arg1) {
-            Intent intent = new Intent(NewActivity.this, FilePicker.class);
-            FilePickerAPI.setKey(LFSConfig.FILEPICKER_API_KEY);
-            startActivityForResult(intent, FilePickerAPI.REQUEST_CODE_GETFILE);
-        }
-    };
-    DialogInterface.OnClickListener newComment = new DialogInterface.OnClickListener() {
-
-        @Override
-        public void onClick(DialogInterface arg0, int arg1) {
-            Intent intent = new Intent(NewActivity.this, NewActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
-    };
-    DialogInterface.OnClickListener tryAgain = new DialogInterface.OnClickListener() {
-
-        @Override
-        public void onClick(DialogInterface arg0, int arg1) {
-
-        }
-    };
-
 }

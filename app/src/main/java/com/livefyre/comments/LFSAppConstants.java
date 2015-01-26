@@ -13,4 +13,7 @@ public class LFSAppConstants {
     public static Boolean SHART = true;
     public static Boolean MOVE_TO_VIEW_POINT = false;
     public static Boolean MOVE_TO_TOP = true;
+    public static String PURPOSE ="purpose";
+    public static String NEW_REPLY ="newReply";
+    public static String NEW_COMMENT ="newComment";
 }

@@ -21,7 +21,7 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/commentTv"
+                android:id="@+id/commentEt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/addPhotopLL"
@@ -49,7 +49,7 @@
                     <ImageView
                         android:id="@+id/capturedImage"
                         android:layout_width="wrap_content"
-                        android:layout_height="360dp"
+                        android:layout_height="180dp"
                         android:scaleType="centerCrop"
                         android:background="@drawable/white_image"
                          />
