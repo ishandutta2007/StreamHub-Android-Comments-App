@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.livefyre.comments.ImagesCache.DownloadImageTask;
 import com.livefyre.comments.ImagesCache.ImagesCache;
 import com.livefyre.comments.LFCApplication;
 import com.livefyre.comments.LFSAppConstants;
@@ -119,23 +118,23 @@ public class CommentsAdapter extends BaseAdapter {
                 holder.likesTv.setVisibility(View.GONE);
 
             //Author
-            if (comment.getAuthor().getAvatar().length() > 0) {
-                Bitmap bm = cache.getImageFromWarehouse(comment.getAuthor()
-                        .getAvatar());
-
-                if (bm != null) {
-                    holder.avatarIv.setImageBitmap(bm);
-                } else {
-                    holder.avatarIv.setImageBitmap(null);
-                    DownloadImageTask imgTask = new DownloadImageTask(this);
-                    imgTask.execute(comment.getAuthor().getAvatar());
-
-                }
-            } else {
-                holder.avatarIv
-                        .setImageResource(R.drawable.profile_default);
-            }
-            DownloadImageTask.getRoundedShape(holder.avatarIv);
+//            if (comment.getAuthor().getAvatar().length() > 0) {
+//                Bitmap bm = cache.getImageFromWarehouse(comment.getAuthor()
+//                        .getAvatar());
+//
+//                if (bm != null) {
+//                    holder.avatarIv.setImageBitmap(bm);
+//                } else {
+//                    holder.avatarIv.setImageBitmap(null);
+//                    DownloadImageTask imgTask = new DownloadImageTask(this);
+//                    imgTask.execute(comment.getAuthor().getAvatar());
+//
+//                }
+//            } else {
+//                holder.avatarIv
+//                        .setImageResource(R.drawable.profile_default);
+//            }
+//            DownloadImageTask.getRoundedShape(holder.avatarIv);
         } catch (Exception e) {
             e.printStackTrace();
         }

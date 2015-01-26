@@ -45,16 +45,16 @@ public class CommentActivity extends BaseActivity {
 
     }
     private void setData(){
-         ContentBean comment = application.getContentCollection().get(position);
-        //Author Name
-        authorNameTv.setText(comment.getAuthor().getDisplayName());
-        //Posted Date
-       postedDateOrTime.setText(LFUtils.getFormatedDate(
-                comment.getCreatedAt(), LFSAppConstants.SHART));
-        //Comment Body
-        commentBody.setText(LFUtils.trimTrailingWhitespace(Html
-                        .fromHtml(comment.getBodyHtml())),
-                TextView.BufferType.SPANNABLE);
+            ContentBean comment = application.getContentCollection().get(position);
+            //Author Name
+            authorNameTv.setText(comment.getAuthor().getDisplayName());
+            //Posted Date
+            postedDateOrTime.setText(LFUtils.getFormatedDate(
+                    comment.getCreatedAt(), LFSAppConstants.SHART));
+            //Comment Body
+            commentBody.setText(LFUtils.trimTrailingWhitespace(Html
+                            .fromHtml(comment.getBodyHtml())),
+                    TextView.BufferType.SPANNABLE);
 
     }
     private void getDataFromIntent(){

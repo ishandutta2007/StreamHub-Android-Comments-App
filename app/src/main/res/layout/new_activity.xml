@@ -31,16 +31,15 @@
                 android:padding="16dp" />
 
             <RelativeLayout
-                android:visibility="gone"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginRight="16dp"
                 android:layout_marginTop="20dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
                 <FrameLayout
+                    android:visibility="gone"
                     android:id="@+id/attacheImageFL"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -49,8 +48,8 @@
                         android:id="@+id/capturedImage"
                         android:layout_width="wrap_content"
                         android:layout_height="360dp"
-                        android:background="@drawable/ic_launcher"
                         android:scaleType="centerCrop"
+                        android:background="@drawable/white_image"
                          />
 
                     <RelativeLayout

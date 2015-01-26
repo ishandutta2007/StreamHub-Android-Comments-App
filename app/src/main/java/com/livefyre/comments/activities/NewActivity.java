@@ -32,6 +32,9 @@ import livefyre.streamhub.LFSConstants;
 import livefyre.streamhub.WriteClient;
 
 public class NewActivity extends BaseActivity {
+    public static final String TAG = NewActivity.class.getSimpleName();
+
+
     Toolbar toolbar;
     TextView commentTv;
     LinearLayout attachImageLL;
@@ -205,7 +208,7 @@ public class NewActivity extends BaseActivity {
             attacheImageFL.setVisibility(View.VISIBLE);
 
             String imgUrl = data.getExtras().getString("fpurl");
-            Log.d("url", imgUrl + "");
+            application.printLog(true, TAG + "Uploaded Image URL", imgUrl + " ");
 
             try {
 
