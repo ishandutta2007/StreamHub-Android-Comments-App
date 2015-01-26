@@ -35,14 +35,13 @@ public class CommentActivity extends BaseActivity {
     Toolbar toolbar;
     TextView authorNameTv, postedDateOrTime, commentBody, moderatorTv, likesTv;
 
-    LinearLayout featureLL,likeLL,newReplyLL;
+    LinearLayout featureLL, likeLL, newReplyLL;
 
-    ImageView avatarIv, imageAttachedToCommentIv,moreIv;
+    ImageView avatarIv, imageAttachedToCommentIv, moreIv;
 
     private int position;
 
     private ProgressDialog dialog;
-
 
 
     ContentBean comment;
@@ -61,26 +60,26 @@ public class CommentActivity extends BaseActivity {
         setListenersToViews();
 
         buildToolBar();
-
-
     }
-    private void setData(){
-            ContentBean comment = application.getContentCollection().get(position);
-            //Author Name
-            authorNameTv.setText(comment.getAuthor().getDisplayName());
-            //Posted Date
-            postedDateOrTime.setText(LFUtils.getFormatedDate(
-                    comment.getCreatedAt(), LFSAppConstants.SHART));
-            //Comment Body
-            commentBody.setText(LFUtils.trimTrailingWhitespace(Html
-                            .fromHtml(comment.getBodyHtml())),
-                    TextView.BufferType.SPANNABLE);
 
+    private void setData() {
+        ContentBean comment = application.getContentCollection().get(position);
+        //Author Name
+        authorNameTv.setText(comment.getAuthor().getDisplayName());
+        //Posted Date
+        postedDateOrTime.setText(LFUtils.getFormatedDate(
+                comment.getCreatedAt(), LFSAppConstants.SHART));
+        //Comment Body
+        commentBody.setText(LFUtils.trimTrailingWhitespace(Html
+                        .fromHtml(comment.getBodyHtml())),
+                TextView.BufferType.SPANNABLE);
     }
-    private void getDataFromIntent(){
-        Intent in=getIntent();
-        position=in.getIntExtra("position",-1);
+
+    private void getDataFromIntent() {
+        Intent in = getIntent();
+        position = in.getIntExtra("position", -1);
     }
+
     private void pullViews() {
         authorNameTv = (TextView) findViewById(R.id.authorNameTv);
         postedDateOrTime = (TextView) findViewById(R.id.postedDateOrTime);
@@ -129,13 +128,12 @@ public class CommentActivity extends BaseActivity {
     View.OnClickListener moreListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            moreDialog(application.getContentCollection().get(position).getId(), true);
+            moreDialog(application.getContentCollection().get(position).getId(), application.getContentCollection().get(position).getIsFeatured());
         }
     };
     View.OnClickListener helpfulListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-//            moreDialog(content.getId(), true, true);
         }
     };
 
@@ -143,17 +141,18 @@ public class CommentActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(CommentActivity.this, NewActivity.class);
-            intent.putExtra(LFSAppConstants.PURPOSE,LFSAppConstants.NEW_REPLY);
-            intent.putExtra(LFSAppConstants.ID,application.getContentCollection().get(position).getId());
+            intent.putExtra(LFSAppConstants.PURPOSE, LFSAppConstants.NEW_REPLY);
+            intent.putExtra(LFSAppConstants.ID, application.getContentCollection().get(position).getId());
             startActivity(intent);
         }
     };
-    private void moreDialog(final String id, final Boolean isFeatured ) {
+
+    private void moreDialog(final String id, final Boolean isFeatured) {
         ContentBean mBean = application.getContentCollection().get(position);
 
         final Dialog dialog = new Dialog(this,
                 android.R.style.Theme_Translucent_NoTitleBar);
-        dialog.setTitle("Hari");
+        dialog.setTitle("");
         dialog.setContentView(R.layout.more);
         dialog.setCancelable(true);
         if (isFeatured) {
@@ -182,7 +181,8 @@ public class CommentActivity extends BaseActivity {
         LinearLayout delete = (LinearLayout) dialog.findViewById(R.id.delete);
 
         View moreLine = dialog.findViewById(R.id.moreLine);
-        if ("yes".equals(application.getDataFromSharedPrefs(LFSAppConstants.ISMOD,""))&& mBean.getIsModerator().equals("true")) {
+
+        if ("yes".equals(application.getDataFromSharedPrefs(LFSAppConstants.ISMOD, "")) && mBean.getIsModerator().equals("true")) {
             edit.setVisibility(View.VISIBLE);
             delete.setVisibility(View.VISIBLE);
             feature.setVisibility(View.VISIBLE);
@@ -208,26 +208,22 @@ public class CommentActivity extends BaseActivity {
         if (mBean.getIsFeatured()) {
             flag.setVisibility(View.GONE);
         }
-
+        //Edit
         edit.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
-
-                    Intent replyView = new Intent(CommentActivity.this, NewActivity.class);
-                    replyView.putExtra("id", id);
+                Intent replyView = new Intent(CommentActivity.this, NewActivity.class);
+                replyView.putExtra("id", id);
                 replyView.putExtra(LFSAppConstants.BODY, application.getContentCollection().get(position).getBodyHtml());
-                    replyView.putExtra(LFSAppConstants.PURPOSE, LFSAppConstants.EDIT);
-                    replyView.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(replyView);
-
-
+                replyView.putExtra(LFSAppConstants.PURPOSE, LFSAppConstants.EDIT);
+                replyView.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(replyView);
                 dialog.dismiss();
-
             }
         });
 
+        //Feature
         feature.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -235,8 +231,7 @@ public class CommentActivity extends BaseActivity {
                 showProgress();
                 if (isFeatured) {
                     try {
-                        WriteClient.featureMessage("unfeature", id,
-                                LFSConfig.COLLECTION_ID, LFSConfig.USER_TOKEN,
+                        WriteClient.featureMessage("unfeature", id, LFSConfig.COLLECTION_ID, LFSConfig.USER_TOKEN,
                                 null, new helpfulCallback());// same as helpful
                         // call back
                     } catch (MalformedURLException e) {
@@ -264,12 +259,12 @@ public class CommentActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-
                 flagDialog(id);
                 dialog.dismiss();
             }
         });
 
+        //bozo
         bozo.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -306,6 +301,7 @@ public class CommentActivity extends BaseActivity {
 //            }
 //        });
 
+        //delete
         delete.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -434,23 +430,13 @@ public class CommentActivity extends BaseActivity {
     private class actionCallback extends JsonHttpResponseHandler {
 
         public void onSuccess(JSONObject responce) {
-//            Log.d("action ClientCall", "success" + responce);
-//            if (!responce.isNull("data")) {
-//                try {
-//                    JSONObject data = responce.getJSONObject("data");
-//                    if (!data.isNull("messageId")) {
-//                        if (data.getString("messageId").equals(mainReviewId)) {
-//                            if (dialog.isShowing())
-//                                dismissProgress();
-//                        }
-//                    }
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            if (dialog.isShowing())
-//                dismissProgress();
+            Log.d("action ClientCall", "success" + responce);
+            if (!responce.isNull("data")) {
+                dismissProgress();
+                showAlert("Comment Deleted Successfully", "OK", null);
+            }
+            if (dialog.isShowing())
+                dismissProgress();
         }
 
         @Override
@@ -512,7 +498,6 @@ public class CommentActivity extends BaseActivity {
 
         }
     }
-
 
 
 }
