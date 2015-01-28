@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.livefyre.comments.AppSingleton;
 import com.livefyre.comments.ImagesCache.ImagesCache;
 import com.livefyre.comments.LFCApplication;
 import com.livefyre.comments.LFSAppConstants;
@@ -18,6 +19,7 @@ import com.livefyre.comments.LFUtils;
 import com.livefyre.comments.R;
 import com.livefyre.comments.models.ContentBean;
 import com.livefyre.comments.models.Vote;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -25,26 +27,27 @@ import java.util.List;
  * Created by kvanadev5 on 25/01/15.
  */
 public class CommentsAdapter extends BaseAdapter {
-    private LFCApplication application;
+    protected LFCApplication application = AppSingleton.getInstance().getApplication();
     private LayoutInflater inflater;
     Context mContext;
     private ImagesCache cache;
     private Bitmap image = null;
+    private List<ContentBean> contentArray=null;
 
-    public CommentsAdapter(Context mContext, LFCApplication application) {
+    public CommentsAdapter(Context mContext, List<ContentBean> contentArray) {
         this.mContext = mContext;
         this.inflater = LayoutInflater.from(mContext);
-        this.application = application;
+        this.contentArray = contentArray;
     }
 
     @Override
     public int getCount() {
-        return application.getContentCollection().size();
+        return contentArray.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return application.getContentCollection().get(position);
+        return contentArray.get(position);
     }
 
     @Override
@@ -77,7 +80,7 @@ public class CommentsAdapter extends BaseAdapter {
     }
 
     private void updateView(int position, ViewHolder holder) {
-        final ContentBean comment = application.getContentCollection().get(position);
+        final ContentBean comment = contentArray.get(position);
         try {
 
 
@@ -109,7 +112,7 @@ public class CommentsAdapter extends BaseAdapter {
             //Liked
             if (comment.getVote() != null) {
                 if (comment.getVote().size() > 0) {
-                    application.printLog(true, "vote", application.getContentCollection().get(position).getVote().size() + "A");
+                    application.printLog(true, "vote", contentArray.get(position).getVote().size() + "A");
                     holder.likesTv.setVisibility(View.VISIBLE);
                     holder.likesTv.setText(likedCount(comment.getVote()));
                 } else
@@ -117,8 +120,10 @@ public class CommentsAdapter extends BaseAdapter {
             } else
                 holder.likesTv.setVisibility(View.GONE);
 
-            //Author
-//            if (comment.getAuthor().getAvatar().length() > 0) {
+
+
+
+            if (comment.getAuthor().getAvatar().length() > 0) {
 //                Bitmap bm = cache.getImageFromWarehouse(comment.getAuthor()
 //                        .getAvatar());
 //
@@ -130,10 +135,12 @@ public class CommentsAdapter extends BaseAdapter {
 //                    imgTask.execute(comment.getAuthor().getAvatar());
 //
 //                }
-//            } else {
+                Picasso.with(mContext).load(comment.getAuthor().getAvatar()).fit()
+                        .into(holder.avatarIv);
+            } else {
 //                holder.avatarIv
 //                        .setImageResource(R.drawable.profile_default);
-//            }
+            }
 //            DownloadImageTask.getRoundedShape(holder.avatarIv);
         } catch (Exception e) {
             e.printStackTrace();

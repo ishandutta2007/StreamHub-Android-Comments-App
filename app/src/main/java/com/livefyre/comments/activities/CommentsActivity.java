@@ -18,6 +18,9 @@ import com.livefyre.comments.LFSAppConstants;
 import com.livefyre.comments.LFSConfig;
 import com.livefyre.comments.R;
 import com.livefyre.comments.adapter.CommentsAdapter;
+import com.livefyre.comments.listeners.ContentUpdateListener;
+import com.livefyre.comments.models.ContentBean;
+import com.livefyre.comments.models.ContentTypeEnum;
 import com.livefyre.comments.parsers.ContentParser;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -25,11 +28,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import livefyre.streamhub.AdminClient;
 import livefyre.streamhub.BootstrapClient;
 
-public class CommentsActivity extends BaseActivity {
+public class CommentsActivity extends BaseActivity implements ContentUpdateListener {
     public static final String TAG = CommentsActivity.class.getSimpleName();
 
 
@@ -38,6 +44,7 @@ public class CommentsActivity extends BaseActivity {
     ListView commentsLV;
 
     ImageButton postNewCommentIv;
+    ArrayList<ContentBean> reviewCollectiontoBuild;
 
     private String adminClintId = "No";
 
@@ -99,6 +106,11 @@ public class CommentsActivity extends BaseActivity {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
+    }
+
+    @Override
+    public void onDataUpdate(HashSet<String> updates) {
 
     }
 
@@ -182,11 +194,29 @@ public class CommentsActivity extends BaseActivity {
 
     void buildReviewList(String data) {
 
-        ContentParser content = new ContentParser(data.toString());
-        content.getContentFromResponse(this);
-        CommentsAdapter mCommentsAdapter = new CommentsAdapter(this, application);
+        ContentParser content = null;
+        try {
+            content = new ContentParser(new JSONObject(data));
+            content.getContentFromResponse(this);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        CommentsAdapter mCommentsAdapter = new CommentsAdapter(this, getMainComments());
         commentsLV.setAdapter(mCommentsAdapter);
         dismissProgressDialog();
+    }
+    ArrayList<ContentBean> getMainComments(){
+        reviewCollectiontoBuild = new ArrayList<ContentBean>();
+        HashMap<String, ContentBean> mainContent = ContentParser.ContentCollection;
+        if (mainContent != null)
+            for (ContentBean t : mainContent.values()) {
+                if (t.getContentType() == ContentTypeEnum.PARENT
+                        && t.getVisibility().equals("1")) {
+                    reviewCollectiontoBuild.add(t);
+                }
+            }
+        return reviewCollectiontoBuild;
     }
 
     DialogInterface.OnClickListener tryAgain = new DialogInterface.OnClickListener() {
@@ -211,7 +241,7 @@ public class CommentsActivity extends BaseActivity {
         public void onItemClick(AdapterView<?> arg0, View arg1, int position,
                                 long arg3) {
             Intent detailViewIntent = new Intent(CommentsActivity.this,CommentActivity.class);
-            detailViewIntent.putExtra("position", position);
+            detailViewIntent.putExtra(LFSAppConstants.ID, reviewCollectiontoBuild.get(position).getId());
             startActivity(detailViewIntent);
         }
     };

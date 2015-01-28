@@ -19,8 +19,10 @@ import com.livefyre.comments.LFSConfig;
 import com.livefyre.comments.LFUtils;
 import com.livefyre.comments.R;
 import com.livefyre.comments.models.ContentBean;
+import com.livefyre.comments.parsers.ContentParser;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -39,7 +41,7 @@ public class CommentActivity extends BaseActivity {
 
     ImageView avatarIv, imageAttachedToCommentIv, moreIv;
 
-    private int position;
+    private String contentId;
 
     private ProgressDialog dialog;
 
@@ -63,7 +65,7 @@ public class CommentActivity extends BaseActivity {
     }
 
     private void setData() {
-        ContentBean comment = application.getContentCollection().get(position);
+        ContentBean comment = ContentParser.ContentCollection.get(contentId);
         //Author Name
         authorNameTv.setText(comment.getAuthor().getDisplayName());
         //Posted Date
@@ -73,11 +75,15 @@ public class CommentActivity extends BaseActivity {
         commentBody.setText(LFUtils.trimTrailingWhitespace(Html
                         .fromHtml(comment.getBodyHtml())),
                 TextView.BufferType.SPANNABLE);
+
+
+        Picasso.with(getApplicationContext()).load(comment.getAuthor().getAvatar()).fit()
+                .into(avatarIv);
     }
 
     private void getDataFromIntent() {
         Intent in = getIntent();
-        position = in.getIntExtra("position", -1);
+        contentId = in.getStringExtra(LFSAppConstants.ID);
     }
 
     private void pullViews() {
@@ -128,7 +134,7 @@ public class CommentActivity extends BaseActivity {
     View.OnClickListener moreListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            moreDialog(application.getContentCollection().get(position).getId(), application.getContentCollection().get(position).getIsFeatured());
+            moreDialog(ContentParser.ContentCollection.get(contentId).getId(), ContentParser.ContentCollection.get(contentId).getIsFeatured());
         }
     };
     View.OnClickListener helpfulListener = new View.OnClickListener() {
@@ -142,13 +148,13 @@ public class CommentActivity extends BaseActivity {
         public void onClick(View v) {
             Intent intent = new Intent(CommentActivity.this, NewActivity.class);
             intent.putExtra(LFSAppConstants.PURPOSE, LFSAppConstants.NEW_REPLY);
-            intent.putExtra(LFSAppConstants.ID, application.getContentCollection().get(position).getId());
+            intent.putExtra(LFSAppConstants.ID, ContentParser.ContentCollection.get(contentId).getId());
             startActivity(intent);
         }
     };
 
     private void moreDialog(final String id, final Boolean isFeatured) {
-        ContentBean mBean = application.getContentCollection().get(position);
+        ContentBean mBean = ContentParser.ContentCollection.get(contentId);
 
         final Dialog dialog = new Dialog(this,
                 android.R.style.Theme_Translucent_NoTitleBar);
@@ -215,7 +221,7 @@ public class CommentActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent replyView = new Intent(CommentActivity.this, NewActivity.class);
                 replyView.putExtra("id", id);
-                replyView.putExtra(LFSAppConstants.BODY, application.getContentCollection().get(position).getBodyHtml());
+                replyView.putExtra(LFSAppConstants.BODY, ContentParser.ContentCollection.get(contentId).getBodyHtml());
                 replyView.putExtra(LFSAppConstants.PURPOSE, LFSAppConstants.EDIT);
                 replyView.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(replyView);
