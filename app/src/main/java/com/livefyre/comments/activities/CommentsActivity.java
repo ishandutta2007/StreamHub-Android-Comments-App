@@ -29,6 +29,8 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -189,16 +191,13 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
             super.onFailure(error, content);
             application.printLog(true, TAG + "-InitCallback-onFailure", error.toString());
         }
-
     }
 
     void buildReviewList(String data) {
-
         ContentParser content = null;
         try {
             content = new ContentParser(new JSONObject(data));
             content.getContentFromResponse(this);
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -206,17 +205,39 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         commentsLV.setAdapter(mCommentsAdapter);
         dismissProgressDialog();
     }
-    ArrayList<ContentBean> getMainComments(){
+
+    ArrayList<ContentBean> getMainComments() {
         reviewCollectiontoBuild = new ArrayList<ContentBean>();
+
+        for (ContentBean parentBean : getSortedMainComments()) {
+            reviewCollectiontoBuild.add(parentBean);
+
+            for (ContentBean b : ContentParser.getChildContentForReview(parentBean.getId())) {
+                reviewCollectiontoBuild.add(b);
+            }
+        }
+        return reviewCollectiontoBuild;
+
+    }
+
+    ArrayList<ContentBean> getSortedMainComments(){
+        ArrayList<ContentBean> sortedList=new ArrayList<ContentBean>();
         HashMap<String, ContentBean> mainContent = ContentParser.ContentCollection;
         if (mainContent != null)
             for (ContentBean t : mainContent.values()) {
                 if (t.getContentType() == ContentTypeEnum.PARENT
                         && t.getVisibility().equals("1")) {
-                    reviewCollectiontoBuild.add(t);
+                    sortedList.add(t);
                 }
             }
-        return reviewCollectiontoBuild;
+        Collections.sort(sortedList, new Comparator<ContentBean>() {
+            @Override
+            public int compare(ContentBean p1, ContentBean p2) {
+                return Integer.parseInt(p2.getCreatedAt())
+                        - Integer.parseInt(p1.getCreatedAt());
+            }
+        });
+        return sortedList;
     }
 
     DialogInterface.OnClickListener tryAgain = new DialogInterface.OnClickListener() {
@@ -235,8 +256,8 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
             startActivity(intent);
         }
     };
-    OnItemClickListener commentsLVListener = new OnItemClickListener() {
 
+    OnItemClickListener commentsLVListener = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> arg0, View arg1, int position,
                                 long arg3) {

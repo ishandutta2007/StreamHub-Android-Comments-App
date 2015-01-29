@@ -288,24 +288,24 @@ public class CommentActivity extends BaseActivity {
             }
         });
 
-//        banUser.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                showProgress();
-//                RequestParams perameters = new RequestParams();
-//                perameters.put("network", LFSConfig.NETWORK_ID);
-//                perameters.put(LFSConstants.LFSPostUserTokenKey,
-//                        LFSConfig.USER_TOKEN);
-//                perameters.put("retroactive", "0");
-//                WriteClient.flagAuthor(ContentParser.ContentCollection.get(id)
-//                                .getAuthorId(), LFSConfig.USER_TOKEN, perameters,
-//                        new actionCallback());
-//
-//                dialog.dismiss();
-//
-//            }
-//        });
+        banUser.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                showProgress();
+                RequestParams perameters = new RequestParams();
+                perameters.put("network", LFSConfig.NETWORK_ID);
+                perameters.put(LFSConstants.LFSPostUserTokenKey,
+                        LFSConfig.USER_TOKEN);
+                perameters.put("retroactive", "0");
+                WriteClient.flagAuthor(ContentParser.ContentCollection.get(id)
+                                .getAuthorId(), LFSConfig.USER_TOKEN, perameters,
+                        new actionCallback());
+
+                dialog.dismiss();
+
+            }
+        });
 
         //delete
         delete.setOnClickListener(new View.OnClickListener() {

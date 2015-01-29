@@ -155,7 +155,7 @@ public class ContentParser {
 
                 }
             }
-            else
+//            else
                 childs.add(bean);
 
             if (bean.getChildBeanContent() != null) {
@@ -231,6 +231,7 @@ public class ContentParser {
                     contentBean.setIsModerator(annotations
                             .getString("moderator"));
                 }
+
                 if (!annotations.isNull("vote")) {
                     JSONArray vote = annotations.getJSONArray("vote");
                     List<Vote> votes = new ArrayList();
@@ -247,14 +248,18 @@ public class ContentParser {
                         }
                     }
                     contentBean.setVote(votes);
+
                     int count = 0;
                     for (int i = 0; i < votes.size(); i++) {
                         if (votes.get(i).getValue().equals("1"))
                             count++;
-                    }
+                   }
+
                     contentBean.setHelpfulcount(count);
-                }
+
+               }
             }
+
             if (!objectMain.isNull("vis")) {
                 contentBean.setVisibility(objectMain.getString("vis"));
                 if (contentBean.getVisibility().equals("1"))
@@ -689,10 +694,10 @@ public class ContentParser {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
+
+
+           }
     }
-
-
 
 
 
