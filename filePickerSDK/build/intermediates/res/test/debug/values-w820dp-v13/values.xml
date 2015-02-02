@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/Users/kvanainc1/Developer/android/livefyre-comments-android/filePickerSDK/build/intermediates/bundles/debug/res/values-w820dp-v13/values.xml -->
+    <!-- From: file:/Users/kvanadev5/Developer/android/projects/livefyre-comments-android/filePickerSDK/build/intermediates/bundles/debug/res/values-w820dp-v13/values.xml -->
     <eat-comment/>
     <dimen name="activity_horizontal_margin">64dp</dimen>
 </resources>

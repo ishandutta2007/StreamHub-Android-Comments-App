@@ -59,7 +59,7 @@ public class CommentsAdapter extends BaseAdapter {
     public class ViewHolder {
         TextView authorNameTv, postedDateOrTime, commentBody, moderatorTv, likesTv;
 
-        LinearLayout featureLL;
+        LinearLayout featureLL,commentsListItemLL;
 
         ImageView avatarIv,imageAttachedToCommentIv;
     }
@@ -84,6 +84,27 @@ public class CommentsAdapter extends BaseAdapter {
         try {
 
 
+            float density = mContext.getResources().getDisplayMetrics().density;
+            int px = (int) (40 * density);
+
+            switch (comment.getDepth()) {
+                case 0:
+                    holder.commentsListItemLL.setPadding(16, 16, 16, 16);
+                    break;
+                case 1:
+                    holder.commentsListItemLL.setPadding(px * 1, 16, 16, 16);
+                    break;
+                case 2:
+                    holder.commentsListItemLL.setPadding(px * 2, 16, 16, 16);
+                    break;
+                case 3:
+                    holder.commentsListItemLL.setPadding(px * 3, 16, 16, 16);
+                    break;
+                default:
+                    holder.commentsListItemLL.setPadding(px * 3, 16, 16, 16);
+                    break;
+
+            }
 
 
             //Author Name
@@ -153,6 +174,9 @@ public class CommentsAdapter extends BaseAdapter {
         View view = null;
 
         view = inflater.inflate(R.layout.comments_list_item, null);
+
+        holder.commentsListItemLL = (LinearLayout) view.findViewById(R.id.commentsListItemLL);
+
         holder.authorNameTv = (TextView) view.findViewById(R.id.authorNameTv);
         holder.postedDateOrTime = (TextView) view.findViewById(R.id.postedDateOrTime);
         holder.commentBody = (TextView) view.findViewById(R.id.commentBody);
@@ -162,6 +186,8 @@ public class CommentsAdapter extends BaseAdapter {
 
         holder.avatarIv = (ImageView) view.findViewById(R.id.avatarIv);
         holder.imageAttachedToCommentIv = (ImageView) view.findViewById(R.id.imageAttachedToCommentIv);
+
+
 
         view.setTag(holder);
         return view;
