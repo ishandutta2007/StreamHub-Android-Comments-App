@@ -47,10 +47,15 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final ContentBean comment = contentArray.get(position);
+
+
+
         try {
 
-
             float density = mContext.getResources().getDisplayMetrics().density;
+
+
+
             int px = (int) (40 * density);
 
             switch (comment.getDepth()) {
@@ -71,6 +76,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
                     break;
 
             }
+
             holder.bottomLine.setVisibility(View.VISIBLE);
 
             //Author Name

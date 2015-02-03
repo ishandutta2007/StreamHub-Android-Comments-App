@@ -15,8 +15,7 @@
         />
 
     <RelativeLayout
-     android:layout_marginTop="8dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginRight="8dp"
         android:layout_marginLeft="16dp"
         android:id="@+id/commentActionsRL"
         android:layout_width="match_parent"
@@ -31,7 +30,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_centerVertical="true"
                 android:id="@+id/likeIv"
-                android:src="@drawable/like"
+                android:src="@drawable/unlike"
                 android:layout_width="30dp"
                 android:layout_height="30dp" />
 
@@ -84,5 +83,5 @@
         android:layout_marginTop="6dp"
         android:background="@color/black54"
         android:layout_width="match_parent"
-        android:layout_height="1dp"></View>
+        android:layout_height=".5dp"></View>
 </LinearLayout>

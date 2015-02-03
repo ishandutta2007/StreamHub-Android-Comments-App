@@ -20,6 +20,7 @@ import com.livefyre.comments.LFUtils;
 import com.livefyre.comments.R;
 import com.livefyre.comments.RoundedTransformation;
 import com.livefyre.comments.models.ContentBean;
+import com.livefyre.comments.models.Vote;
 import com.livefyre.comments.parsers.ContentParser;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -28,6 +29,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.util.List;
 
 import livefyre.streamhub.LFSActions;
 import livefyre.streamhub.LFSConstants;
@@ -43,12 +45,6 @@ public class CommentActivity extends BaseActivity {
     ImageView avatarIv, imageAttachedToCommentIv, moreIv;
 
     private String contentId;
-
-    private ProgressDialog dialog;
-
-
-    ContentBean comment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,95 +61,128 @@ public class CommentActivity extends BaseActivity {
         buildToolBar();
     }
 
-    private void setData() {
-        ContentBean comment = ContentParser.ContentCollection.get(contentId);
-        //Author Name
-        authorNameTv.setText(comment.getAuthor().getDisplayName());
-        //Posted Date
-        postedDateOrTime.setText(LFUtils.getFormatedDate(
-                comment.getCreatedAt(), LFSAppConstants.SHART));
-        //Comment Body
-        commentBody.setText(LFUtils.trimTrailingWhitespace(Html
-                        .fromHtml(comment.getBodyHtml())),
-                TextView.BufferType.SPANNABLE);
 
-        Picasso.with(getApplicationContext()).load(comment.getAuthor().getAvatar()).fit().transform(new RoundedTransformation(90, 0)).into(avatarIv);
-
-    }
-
-    private void getDataFromIntent() {
-        Intent in = getIntent();
-        contentId = in.getStringExtra(LFSAppConstants.ID);
-    }
-
-    private void pullViews() {
-        authorNameTv = (TextView) findViewById(R.id.authorNameTv);
-        postedDateOrTime = (TextView) findViewById(R.id.postedDateOrTime);
-        commentBody = (TextView) findViewById(R.id.commentBody);
-        likesTv = (TextView) findViewById(R.id.likesTv);
-        moderatorTv = (TextView) findViewById(R.id.moderatorTv);
-        featureLL = (LinearLayout) findViewById(R.id.featureLL);
-        newReplyLL = (LinearLayout) findViewById(R.id.newReplyLL);
-        likeLL = (LinearLayout) findViewById(R.id.likeLL);
-        avatarIv = (ImageView) findViewById(R.id.avatarIv);
-        imageAttachedToCommentIv = (ImageView) findViewById(R.id.imageAttachedToCommentIv);
-        moreIv = (ImageView) findViewById(R.id.moreIv);
-
-    }
-
-    private void setListenersToViews() {
-        newReplyLL.setOnClickListener(newReplyLLListener);
-        moreIv.setOnClickListener(moreListener);
-    }
-
-    private void buildToolBar() {
-        toolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        //Activity Icon
-        ImageView homeIcon = (ImageView) findViewById(R.id.activityIcon);
-        homeIcon.setBackgroundResource(R.drawable.back);
-
-        LinearLayout activityIconLL= (LinearLayout) findViewById(R.id.activityIconLL);
-        activityIconLL.setOnClickListener(homeIconListener);
-
-        //Activity Name
-        TextView activityName = (TextView) findViewById(R.id.activityTitle);
-
-
-        activityName.setText("Comment");
-
-    }
-
-    View.OnClickListener homeIconListener = new View.OnClickListener() {
+    View.OnClickListener likeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            finish();
-        }
-    };
-    View.OnClickListener moreListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            moreDialog(ContentParser.ContentCollection.get(contentId).getId(), ContentParser.ContentCollection.get(contentId).getIsFeatured());
-        }
-    };
-    View.OnClickListener helpfulListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
+            helpfulDialog(
+                    knowHelpfulValue(
+                            application
+                                    .getDataFromSharedPrefs(LFSAppConstants.ID, ""),
+                            ContentParser.ContentCollection.get(contentId).getVote()), ContentParser.ContentCollection.get(contentId).getId());
         }
     };
 
-    View.OnClickListener newReplyLLListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(CommentActivity.this, NewActivity.class);
-            intent.putExtra(LFSAppConstants.PURPOSE, LFSAppConstants.NEW_REPLY);
-            intent.putExtra(LFSAppConstants.ID, ContentParser.ContentCollection.get(contentId).getId());
-            startActivity(intent);
-        }
-    };
+    int knowHelpfulValue(String authorId, List<Vote> v) {
+
+        int helpfulValue = 0;
+        if (v != null)
+            for (int i = 0; i < v.size(); i++) {
+                if (v.get(i).getAuthor().equals(authorId)) { // helpful or not
+                    // helpful
+
+                    if (v.get(i).getValue().equals("1"))
+                        helpfulValue = 1;
+                    else
+                        helpfulValue = 2;
+                    break;
+                }
+            }
+
+        return helpfulValue;
+    }
+
+    private void helpfulDialog(final int HFVal, final String id) {
+        final Dialog dialog = new Dialog(this,
+                android.R.style.Theme_Translucent_NoTitleBar);
+
+        dialog.setTitle("");
+        dialog.setContentView(R.layout.helpfull_dialog);
+        dialog.setCancelable(true);
+
+        LinearLayout emptyDialogSpace = (LinearLayout) dialog
+                .findViewById(R.id.emptyDialogSpace);
+        emptyDialogSpace.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+
+            }
+        });
+
+        LinearLayout helpful = (LinearLayout) dialog.findViewById(R.id.helpful);
+        helpful.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                showProgressDialog();
+                if (HFVal == 1) {
+                    RequestParams perameters = new RequestParams();
+                    perameters.put("value", "0");
+                    perameters.put(LFSConstants.LFSPostUserTokenKey,
+                            LFSConfig.USER_TOKEN);
+                    perameters.put("message_id", id);
+
+                    WriteClient.postAction(LFSConfig.COLLECTION_ID, id,
+                            LFSConfig.USER_TOKEN, LFSActions.VOTE, perameters,
+                            new helpfulCallback());
+                    dialog.dismiss();
+                } else {
+                    RequestParams perameters = new RequestParams();
+                    perameters.put("value", "1");
+                    perameters.put(LFSConstants.LFSPostUserTokenKey,
+                            LFSConfig.USER_TOKEN);
+                    perameters.put("message_id", id);
+
+                    WriteClient.postAction(LFSConfig.COLLECTION_ID, id,
+                            LFSConfig.USER_TOKEN, LFSActions.VOTE, perameters,
+                            new helpfulCallback());
+                    dialog.dismiss();
+
+                }
+
+            }
+        });
+
+        LinearLayout notHelpful = (LinearLayout) dialog
+                .findViewById(R.id.notHelpful);
+        notHelpful.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                showProgressDialog();
+                if (HFVal == 2) {
+                    RequestParams perameters = new RequestParams();
+                    perameters.put("value", "0");
+                    perameters.put(LFSConstants.LFSPostUserTokenKey,
+                            LFSConfig.USER_TOKEN);
+                    perameters.put("message_id", id);
+
+                    WriteClient.postAction(LFSConfig.COLLECTION_ID, id,
+                            LFSConfig.USER_TOKEN, LFSActions.VOTE, perameters,
+                            new helpfulCallback());
+                    dialog.dismiss();
+                } else {
+                    RequestParams perameters = new RequestParams();
+                    perameters.put("value", "2");
+                    perameters.put(LFSConstants.LFSPostUserTokenKey,
+                            LFSConfig.USER_TOKEN);
+                    perameters.put("message_id", id);
+
+                    WriteClient.postAction(LFSConfig.COLLECTION_ID, id,
+                            LFSConfig.USER_TOKEN, LFSActions.VOTE, perameters,
+                            new helpfulCallback());
+                    dialog.dismiss();
+
+                }
+
+            }
+        });
+        dialog.show();
+
+    }
 
     private void moreDialog(final String id, final Boolean isFeatured) {
         ContentBean mBean = ContentParser.ContentCollection.get(contentId);
@@ -236,7 +265,7 @@ public class CommentActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                showProgress();
+                showProgressDialog();
                 if (isFeatured) {
                     try {
                         WriteClient.featureMessage("unfeature", id, LFSConfig.COLLECTION_ID, LFSConfig.USER_TOKEN,
@@ -277,7 +306,7 @@ public class CommentActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                showProgress();
+                showProgressDialog();
                 RequestParams perameters = new RequestParams();
                 perameters.put(LFSConstants.LFSPostUserTokenKey,
                         LFSConfig.USER_TOKEN);
@@ -294,7 +323,7 @@ public class CommentActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                showProgress();
+                showProgressDialog();
                 RequestParams perameters = new RequestParams();
                 perameters.put("network", LFSConfig.NETWORK_ID);
                 perameters.put(LFSConstants.LFSPostUserTokenKey,
@@ -314,7 +343,7 @@ public class CommentActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                showProgress();
+                showProgressDialog();
                 RequestParams parameters = new RequestParams();
                 parameters.put(LFSConstants.LFSPostUserTokenKey,
                         LFSConfig.USER_TOKEN);
@@ -435,22 +464,57 @@ public class CommentActivity extends BaseActivity {
         dialog.show();
     }
 
+
+
+
+
+    View.OnClickListener moreListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            moreDialog(ContentParser.ContentCollection.get(contentId).getId(), ContentParser.ContentCollection.get(contentId).getIsFeatured());
+        }
+    };
+
+    View.OnClickListener newReplyLLListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(CommentActivity.this, NewActivity.class);
+            intent.putExtra(LFSAppConstants.PURPOSE, LFSAppConstants.NEW_REPLY);
+            intent.putExtra(LFSAppConstants.ID, ContentParser.ContentCollection.get(contentId).getId());
+            startActivity(intent);
+        }
+    };
+
+    View.OnClickListener homeIconListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            finish();
+        }
+    };
+
+
+
+
+
+
+    //Call backs
+
     private class actionCallback extends JsonHttpResponseHandler {
 
         public void onSuccess(JSONObject responce) {
             Log.d("action ClientCall", "success" + responce);
             if (!responce.isNull("data")) {
-                dismissProgress();
+                dismissProgressDialog();
                 showAlert("Comment Deleted Successfully", "OK", null);
             }
             if (dialog.isShowing())
-                dismissProgress();
+                dismissProgressDialog();
         }
 
         @Override
         public void onFailure(Throwable error, String content) {
             super.onFailure(error, content);
-            dismissProgress();
+            dismissProgressDialog();
             Log.d("action ClientCall", error + "");
             showToast("Something went wrong.");
         }
@@ -460,13 +524,13 @@ public class CommentActivity extends BaseActivity {
     private class helpfulCallback extends JsonHttpResponseHandler {
 
         public void onSuccess(JSONObject data) {
-            dismissProgress();
+            dismissProgressDialog();
         }
 
         @Override
         public void onFailure(Throwable error, String content) {
             super.onFailure(error, content);
-            dismissProgress();
+            dismissProgressDialog();
             showToast("Something went wrong.");
 
         }
@@ -483,29 +547,80 @@ public class CommentActivity extends BaseActivity {
         @Override
         public void onFailure(Throwable error, String content) {
             super.onFailure(error, content);
-            dismissProgress();
+            dismissProgressDialog();
             showToast("Something went wrong.");
 
         }
 
     }
 
-    protected void showProgress() {
-        dialog = new ProgressDialog(this);
-        dialog.setMessage("Please wait." + "\n"
-                + "Your request is being processed..");
+    private ProgressDialog dialog;
 
-        dialog.setCancelable(false);
-        dialog.show();
+
+
+
+
+    private void setData() {
+        ContentBean comment = ContentParser.ContentCollection.get(contentId);
+        //Author Name
+        authorNameTv.setText(comment.getAuthor().getDisplayName());
+        //Posted Date
+        postedDateOrTime.setText(LFUtils.getFormatedDate(
+                comment.getCreatedAt(), LFSAppConstants.SHART));
+        //Comment Body
+        commentBody.setText(LFUtils.trimTrailingWhitespace(Html
+                        .fromHtml(comment.getBodyHtml())),
+                TextView.BufferType.SPANNABLE);
+
+        Picasso.with(getApplicationContext()).load(comment.getAuthor().getAvatar()).fit().transform(new RoundedTransformation(90, 0)).into(avatarIv);
+
     }
 
-    protected void dismissProgress() {
-        try {
-            dialog.dismiss();
-        } catch (Exception e) {
-
-        }
+    private void getDataFromIntent() {
+        Intent in = getIntent();
+        contentId = in.getStringExtra(LFSAppConstants.ID);
     }
 
+    private void pullViews() {
+        authorNameTv = (TextView) findViewById(R.id.authorNameTv);
+        postedDateOrTime = (TextView) findViewById(R.id.postedDateOrTime);
+        commentBody = (TextView) findViewById(R.id.commentBody);
+        likesTv = (TextView) findViewById(R.id.likesTv);
+        moderatorTv = (TextView) findViewById(R.id.moderatorTv);
+        featureLL = (LinearLayout) findViewById(R.id.featureLL);
+        newReplyLL = (LinearLayout) findViewById(R.id.newReplyLL);
+        likeLL = (LinearLayout) findViewById(R.id.likeLL);
+        avatarIv = (ImageView) findViewById(R.id.avatarIv);
+        imageAttachedToCommentIv = (ImageView) findViewById(R.id.imageAttachedToCommentIv);
+        moreIv = (ImageView) findViewById(R.id.moreIv);
+
+    }
+
+    private void setListenersToViews() {
+        newReplyLL.setOnClickListener(newReplyLLListener);
+        moreIv.setOnClickListener(moreListener);
+        likeLL.setOnClickListener(likeListener);
+    }
+
+    private void buildToolBar() {
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        //Activity Icon
+        ImageView homeIcon = (ImageView) findViewById(R.id.activityIcon);
+        homeIcon.setBackgroundResource(R.drawable.back);
+
+        LinearLayout activityIconLL = (LinearLayout) findViewById(R.id.activityIconLL);
+        activityIconLL.setOnClickListener(homeIconListener);
+
+        //Activity Name
+        TextView activityName = (TextView) findViewById(R.id.activityTitle);
+
+
+        activityName.setText("Comment");
+
+    }
 
 }

@@ -329,8 +329,10 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
             if (hideToolBar) {
+                postNewCommentIv.setVisibility(View.GONE);
                 getSupportActionBar().hide();
             } else {
+                postNewCommentIv.setVisibility(View.VISIBLE);
                 getSupportActionBar().show();
             }
         }
