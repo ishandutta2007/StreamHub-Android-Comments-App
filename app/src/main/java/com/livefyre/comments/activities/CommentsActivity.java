@@ -1,16 +1,18 @@
 package com.livefyre.comments.activities;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.livefyre.comments.BaseActivity;
@@ -43,10 +45,10 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
     Toolbar toolbar;
 
-    ListView commentsLV;
-
+    RecyclerView commentsLV;
+    CommentsAdapter mCommentsAdapter;
     ImageButton postNewCommentIv;
-    ArrayList<ContentBean> reviewCollectiontoBuild;
+    ArrayList<ContentBean> reviewCollectionBuild;
 
     private String adminClintId = "No";
 
@@ -63,11 +65,26 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
         adminClintCall();
 
+
+
     }
 
     private void setListenersToViews() {
         postNewCommentIv.setOnClickListener(postNewCommentListener);
-        commentsLV.setOnItemClickListener(commentsLVListener);
+        commentsLV.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), commentsLV, new ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Intent detailViewIntent = new Intent(CommentsActivity.this, CommentActivity.class);
+                detailViewIntent.putExtra(LFSAppConstants.ID, reviewCollectionBuild.get(position).getId());
+                startActivity(detailViewIntent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+        commentsLV.setOnScrollListener(onScrollListener);
     }
 
     private void buildToolBar() {
@@ -88,14 +105,14 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
     private void pullViews() {
 
-        commentsLV = (ListView) findViewById(R.id.commentsLV);
-
+        commentsLV = (RecyclerView) findViewById(R.id.commentsLV);
+        commentsLV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         postNewCommentIv = (ImageButton) findViewById(R.id.postNewCommentIv);
     }
 
     void adminClintCall() {
         if (!isNetworkAvailable()) {
-            showAlert("No connection available","TRY AGAIN",tryAgain);
+            showAlert("No connection available", "TRY AGAIN", tryAgain);
             return;
         } else {
             showProgressDialog();
@@ -182,7 +199,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         public void onSuccess(String data) {
             application.printLog(false, TAG + "-InitCallback-onSuccess", data.toString());
 
-            buildReviewList(data);
+            buildCommentList(data);
 
         }
 
@@ -193,7 +210,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         }
     }
 
-    void buildReviewList(String data) {
+    void buildCommentList(String data) {
         ContentParser content = null;
         try {
             content = new ContentParser(new JSONObject(data));
@@ -201,27 +218,27 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        CommentsAdapter mCommentsAdapter = new CommentsAdapter(this, getMainComments());
+        mCommentsAdapter = new CommentsAdapter(this, getMainComments());
         commentsLV.setAdapter(mCommentsAdapter);
         dismissProgressDialog();
     }
 
     ArrayList<ContentBean> getMainComments() {
-        reviewCollectiontoBuild = new ArrayList<ContentBean>();
+        reviewCollectionBuild = new ArrayList<ContentBean>();
 
         for (ContentBean parentBean : getSortedMainComments()) {
-            reviewCollectiontoBuild.add(parentBean);
+            reviewCollectionBuild.add(parentBean);
 
             for (ContentBean b : ContentParser.getChildContentForReview(parentBean.getId())) {
-                reviewCollectiontoBuild.add(b);
+                reviewCollectionBuild.add(b);
             }
         }
-        return reviewCollectiontoBuild;
+        return reviewCollectionBuild;
 
     }
 
-    ArrayList<ContentBean> getSortedMainComments(){
-        ArrayList<ContentBean> sortedList=new ArrayList<ContentBean>();
+    ArrayList<ContentBean> getSortedMainComments() {
+        ArrayList<ContentBean> sortedList = new ArrayList<ContentBean>();
         HashMap<String, ContentBean> mainContent = ContentParser.ContentCollection;
         if (mainContent != null)
             for (ContentBean t : mainContent.values()) {
@@ -252,18 +269,77 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(CommentsActivity.this, NewActivity.class);
-            intent.putExtra(LFSAppConstants.PURPOSE,LFSAppConstants.NEW_COMMENT);
+            intent.putExtra(LFSAppConstants.PURPOSE, LFSAppConstants.NEW_COMMENT);
             startActivity(intent);
         }
     };
 
-    OnItemClickListener commentsLVListener = new OnItemClickListener() {
+
+    static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+
+        private GestureDetector gestureDetector;
+        private ClickListener clickListener;
+
+        public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final ClickListener clickListener) {
+            this.clickListener = clickListener;
+            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
+                    if (child != null && clickListener != null) {
+                        clickListener.onLongClick(child, recyclerView.getChildPosition(child));
+                    }
+                }
+            });
+        }
+
         @Override
-        public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-                                long arg3) {
-            Intent detailViewIntent = new Intent(CommentsActivity.this,CommentActivity.class);
-            detailViewIntent.putExtra(LFSAppConstants.ID, reviewCollectiontoBuild.get(position).getId());
-            startActivity(detailViewIntent);
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
+            if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
+                clickListener.onClick(child, rv.getChildPosition(child));
+            }
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+    }
+
+    public static interface ClickListener {
+        public void onClick(View view, int position);
+
+        public void onLongClick(View view, int position);
+    }
+
+    public RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        boolean hideToolBar = false;
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if (hideToolBar) {
+                getSupportActionBar().hide();
+            } else {
+               getSupportActionBar().show();
+            }
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (dy > 20) {
+                hideToolBar = true;
+
+            } else if (dy < -5) {
+                hideToolBar = false;
+            }
         }
     };
 }

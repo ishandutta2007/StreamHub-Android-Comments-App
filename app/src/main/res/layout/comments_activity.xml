@@ -2,19 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-   android:background="@color/colorWhite"
+    android:background="@color/colorWhite"
     tools:context=".MainActivity">
 
     <include
         android:id="@+id/app_bar"
         layout="@layout/app_bar" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/commentsLV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/app_bar"
-        ></ListView>
+        android:layout_below="@+id/app_bar"></android.support.v7.widget.RecyclerView>
 
     <ImageButton
         android:id="@+id/postNewCommentIv"
@@ -25,6 +24,6 @@
         android:layout_marginBottom="24dp"
         android:layout_marginRight="16dp"
         android:background="@drawable/round_button"
-        android:src="@drawable/new_comment_pencil"/>
+        android:src="@drawable/new_comment_pencil" />
 
 </RelativeLayout>

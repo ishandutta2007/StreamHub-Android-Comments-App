@@ -1,18 +1,16 @@
 package com.livefyre.comments.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.livefyre.comments.AppSingleton;
-import com.livefyre.comments.ImagesCache.ImagesCache;
 import com.livefyre.comments.LFCApplication;
 import com.livefyre.comments.LFSAppConstants;
 import com.livefyre.comments.LFUtils;
@@ -24,62 +22,29 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 /**
- * Created by kvanadev5 on 25/01/15.
+ * Created by kvanadev5 on 02/02/15.
  */
-public class CommentsAdapter extends BaseAdapter {
-    protected LFCApplication application = AppSingleton.getInstance().getApplication();
-    private LayoutInflater inflater;
+public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyViewHolder> {
+    private LFCApplication application = AppSingleton.getInstance().getApplication();
+    private LayoutInflater mLayoutInflater;
     Context mContext;
-    private ImagesCache cache;
-    private Bitmap image = null;
     private List<ContentBean> contentArray=null;
 
-    public CommentsAdapter(Context mContext, List<ContentBean> contentArray) {
-        this.mContext = mContext;
-        this.inflater = LayoutInflater.from(mContext);
+    public CommentsAdapter(Context context, List<ContentBean> contentArray) {
+        this.mContext = context;
+        mLayoutInflater = LayoutInflater.from(context);
         this.contentArray = contentArray;
     }
 
     @Override
-    public int getCount() {
-        return contentArray.size();
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = mLayoutInflater.inflate(R.layout.comments_list_item, parent, false);
+        MyViewHolder holder = new MyViewHolder(view);
+        return holder;
     }
 
     @Override
-    public Object getItem(int position) {
-        return contentArray.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-
-    public class ViewHolder {
-        TextView authorNameTv, postedDateOrTime, commentBody, moderatorTv, likesTv;
-
-        LinearLayout featureLL,commentsListItemLL;
-
-        ImageView avatarIv,imageAttachedToCommentIv;
-    }
-
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        if (convertView == null)
-            convertView = getConvertView();
-
-        ViewHolder holder = (ViewHolder) convertView.getTag();
-        updateView(position, holder);
-
-        convertView.setId(position);
-
-        return convertView;
-    }
-
-    private void updateView(int position, ViewHolder holder) {
+    public void onBindViewHolder(MyViewHolder holder, int position) {
         final ContentBean comment = contentArray.get(position);
         try {
 
@@ -142,8 +107,6 @@ public class CommentsAdapter extends BaseAdapter {
                 holder.likesTv.setVisibility(View.GONE);
 
 
-
-
             if (comment.getAuthor().getAvatar().length() > 0) {
 //                Bitmap bm = cache.getImageFromWarehouse(comment.getAuthor()
 //                        .getAvatar());
@@ -166,33 +129,36 @@ public class CommentsAdapter extends BaseAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
-    public View getConvertView() {
-        ViewHolder holder = new ViewHolder();
-        View view = null;
-
-        view = inflater.inflate(R.layout.comments_list_item, null);
-
-        holder.commentsListItemLL = (LinearLayout) view.findViewById(R.id.commentsListItemLL);
-
-        holder.authorNameTv = (TextView) view.findViewById(R.id.authorNameTv);
-        holder.postedDateOrTime = (TextView) view.findViewById(R.id.postedDateOrTime);
-        holder.commentBody = (TextView) view.findViewById(R.id.commentBody);
-        holder.likesTv = (TextView) view.findViewById(R.id.likesTv);
-        holder.moderatorTv = (TextView) view.findViewById(R.id.moderatorTv);
-        holder.featureLL = (LinearLayout) view.findViewById(R.id.featureLL);
-
-        holder.avatarIv = (ImageView) view.findViewById(R.id.avatarIv);
-        holder.imageAttachedToCommentIv = (ImageView) view.findViewById(R.id.imageAttachedToCommentIv);
-
-
-
-        view.setTag(holder);
-        return view;
+    @Override
+    public int getItemCount() {
+        return contentArray.size();
     }
 
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+        // each data item is just a string in this case
+        TextView authorNameTv, postedDateOrTime, commentBody, moderatorTv, likesTv;
+
+        LinearLayout featureLL, commentsListItemLL;
+
+        ImageView avatarIv, imageAttachedToCommentIv;
+
+        public MyViewHolder(View item) {
+            super(item);
+            commentsListItemLL = (LinearLayout) item.findViewById(R.id.commentsListItemLL);
+
+            authorNameTv = (TextView) item.findViewById(R.id.authorNameTv);
+            postedDateOrTime = (TextView) item.findViewById(R.id.postedDateOrTime);
+            commentBody = (TextView) item.findViewById(R.id.commentBody);
+            likesTv = (TextView) item.findViewById(R.id.likesTv);
+            moderatorTv = (TextView) item.findViewById(R.id.moderatorTv);
+            featureLL = (LinearLayout) item.findViewById(R.id.featureLL);
+
+            avatarIv = (ImageView) item.findViewById(R.id.avatarIv);
+            imageAttachedToCommentIv = (ImageView) item.findViewById(R.id.imageAttachedToCommentIv);
+        }
+    }
     String likedCount(List<Vote> v) {
         int count = 0;
         for (int i = 0; i < v.size(); i++) {
@@ -201,5 +167,4 @@ public class CommentsAdapter extends BaseAdapter {
         }
         return "Likes " + v.size();
     }
-
 }
