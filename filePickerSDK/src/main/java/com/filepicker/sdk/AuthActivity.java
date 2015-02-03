@@ -34,15 +34,15 @@ import android.widget.ProgressBar;
             WebView webview = (WebView) findViewById(R.id.webView1);
 
             ActionBar actionBar = getActionBar();
-            actionBar.setTitle("     FilePicker");
+//            actionBar.setTitle("     FilePicker");
             View appIcon = findViewById(android.R.id.home);
     		appIcon.setClickable(true);
     		appIcon.setOnClickListener(finishAct);
 //            ab.setTitle(myIntent.getExtras().getString("parent_app"));
 //            ab.setSubtitle("Please Authenticate");
 //            ab.setDisplayHomeAsUpEnabled(true);
-    		actionBar.setDisplayOptions(actionBar.getDisplayOptions()
-		            | ActionBar.DISPLAY_SHOW_CUSTOM);
+//    		actionBar.setDisplayOptions(actionBar.getDisplayOptions()
+//		            | ActionBar.DISPLAY_SHOW_CUSTOM);
 		    ImageView imageView = new ImageView(actionBar.getThemedContext());
 		    imageView.setScaleType(ImageView.ScaleType.CENTER);
 		    imageView.setImageResource(R.drawable.fplivefyreflame);

@@ -28,15 +28,15 @@
                 android:layout_alignParentTop="true"
                 android:background="@color/colorWhite"
                 android:gravity="top"
-                android:padding="16dp" />
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"/>
 
             <RelativeLayout
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
@@ -49,7 +49,7 @@
                     <ImageView
                         android:id="@+id/capturedImage"
                         android:layout_width="wrap_content"
-                        android:layout_height="180dp"
+                        android:layout_height="wrap_content"
                         android:scaleType="centerCrop"
                         android:background="@drawable/white_image"
                          />

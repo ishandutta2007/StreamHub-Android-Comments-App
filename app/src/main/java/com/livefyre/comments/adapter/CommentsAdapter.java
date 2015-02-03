@@ -15,6 +15,7 @@ import com.livefyre.comments.LFCApplication;
 import com.livefyre.comments.LFSAppConstants;
 import com.livefyre.comments.LFUtils;
 import com.livefyre.comments.R;
+import com.livefyre.comments.RoundedTransformation;
 import com.livefyre.comments.models.ContentBean;
 import com.livefyre.comments.models.Vote;
 import com.squareup.picasso.Picasso;
@@ -28,7 +29,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
     private LFCApplication application = AppSingleton.getInstance().getApplication();
     private LayoutInflater mLayoutInflater;
     Context mContext;
-    private List<ContentBean> contentArray=null;
+    private List<ContentBean> contentArray = null;
 
     public CommentsAdapter(Context context, List<ContentBean> contentArray) {
         this.mContext = context;
@@ -54,23 +55,23 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
 
             switch (comment.getDepth()) {
                 case 0:
-                    holder.commentsListItemLL.setPadding(16, 16, 16, 16);
+                    holder.commentsListItemLL.setPadding(16, 0, 16, 16);
                     break;
                 case 1:
-                    holder.commentsListItemLL.setPadding(px * 1, 16, 16, 16);
+                    holder.commentsListItemLL.setPadding(px * 1, 0, 16, 16);
                     break;
                 case 2:
-                    holder.commentsListItemLL.setPadding(px * 2, 16, 16, 16);
+                    holder.commentsListItemLL.setPadding(px * 2, 0, 16, 16);
                     break;
                 case 3:
-                    holder.commentsListItemLL.setPadding(px * 3, 16, 16, 16);
+                    holder.commentsListItemLL.setPadding(px * 3, 0, 16, 16);
                     break;
                 default:
-                    holder.commentsListItemLL.setPadding(px * 3, 16, 16, 16);
+                    holder.commentsListItemLL.setPadding(px * 3, 0, 16, 16);
                     break;
 
             }
-
+            holder.bottomLine.setVisibility(View.VISIBLE);
 
             //Author Name
             holder.authorNameTv.setText(comment.getAuthor().getDisplayName());
@@ -108,24 +109,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
 
 
             if (comment.getAuthor().getAvatar().length() > 0) {
-//                Bitmap bm = cache.getImageFromWarehouse(comment.getAuthor()
-//                        .getAvatar());
-//
-//                if (bm != null) {
-//                    holder.avatarIv.setImageBitmap(bm);
-//                } else {
-//                    holder.avatarIv.setImageBitmap(null);
-//                    DownloadImageTask imgTask = new DownloadImageTask(this);
-//                    imgTask.execute(comment.getAuthor().getAvatar());
-//
-//                }
-                Picasso.with(mContext).load(comment.getAuthor().getAvatar()).fit()
-                        .into(holder.avatarIv);
+                Picasso.with(mContext).load(comment.getAuthor().getAvatar()).fit().transform(new RoundedTransformation(90, 0)).into(holder.avatarIv);
             } else {
-//                holder.avatarIv
-//                        .setImageResource(R.drawable.profile_default);
             }
-//            DownloadImageTask.getRoundedShape(holder.avatarIv);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -138,6 +124,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
+        View bottomLine;
+
         TextView authorNameTv, postedDateOrTime, commentBody, moderatorTv, likesTv;
 
         LinearLayout featureLL, commentsListItemLL;
@@ -146,6 +134,9 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
 
         public MyViewHolder(View item) {
             super(item);
+
+            bottomLine = item.findViewById(R.id.bottomLine);
+
             commentsListItemLL = (LinearLayout) item.findViewById(R.id.commentsListItemLL);
 
             authorNameTv = (TextView) item.findViewById(R.id.authorNameTv);
@@ -159,6 +150,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
             imageAttachedToCommentIv = (ImageView) item.findViewById(R.id.imageAttachedToCommentIv);
         }
     }
+
     String likedCount(List<Vote> v) {
         int count = 0;
         for (int i = 0; i < v.size(); i++) {

@@ -4,6 +4,7 @@ package com.livefyre.comments.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +46,8 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
     Toolbar toolbar;
 
+    TextView activityTitle;
+
     RecyclerView commentsLV;
     CommentsAdapter mCommentsAdapter;
     ImageButton postNewCommentIv;
@@ -64,9 +67,6 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         buildToolBar();
 
         adminClintCall();
-
-
-
     }
 
     private void setListenersToViews() {
@@ -95,11 +95,13 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         setSupportActionBar(toolbar);
         //disable title on toolbar
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ImageView homeIcon = (ImageView) findViewById(R.id.activityIcon);
 
-        TextView activityName = (TextView) findViewById(R.id.activityTitle);
+        ImageView homeIcon = (ImageView) findViewById(R.id.activityIcon);
         homeIcon.setBackgroundResource(R.drawable.flame);
-        activityName.setText("Comments");
+
+        activityTitle = (TextView) findViewById(R.id.activityTitle);
+        activityTitle.setText("Comments");
+        activityTitle.setOnClickListener(activityTitleListenerHide);
 
     }
 
@@ -108,6 +110,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         commentsLV = (RecyclerView) findViewById(R.id.commentsLV);
         commentsLV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         postNewCommentIv = (ImageButton) findViewById(R.id.postNewCommentIv);
+
     }
 
     void adminClintCall() {
@@ -321,25 +324,55 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
     public RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         boolean hideToolBar = false;
+
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
             if (hideToolBar) {
                 getSupportActionBar().hide();
             } else {
-               getSupportActionBar().show();
+                getSupportActionBar().show();
             }
         }
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            if (dy > 20) {
+            if (dy > 2) {
                 hideToolBar = true;
 
-            } else if (dy < -5) {
+            } else if (dy < -1) {
                 hideToolBar = false;
             }
+        }
+    };
+
+    View.OnClickListener activityTitleListenerHide = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH ){
+                activityTitle.setSystemUiVisibility( View.SYSTEM_UI_FLAG_HIDE_NAVIGATION );
+            }
+            else if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
+                activityTitle.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
+            }
+
+            postNewCommentIv.setVisibility(View.GONE);
+
+
+            activityTitle.setOnClickListener(activityTitleListenerShow);
+
+        }
+    };
+    View.OnClickListener activityTitleListenerShow = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            postNewCommentIv.setVisibility(View.VISIBLE);
+
+            activityTitle.setOnClickListener(activityTitleListenerHide);
+
         }
     };
 }

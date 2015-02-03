@@ -60,7 +60,7 @@ public class NewActivity extends BaseActivity {
 
         setListenersToViews();
 
-        buildToolBar();
+        setListenersToViewsAndSetConfig();
     }
 
     private void getDataFromIntent() {
@@ -95,34 +95,42 @@ public class NewActivity extends BaseActivity {
     }
 
 
-    private void buildToolBar() {
+    private void setListenersToViewsAndSetConfig() {
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        //Activity Icon
-        ImageView homeIcon = (ImageView) findViewById(R.id.activityIcon);
-        homeIcon.setOnClickListener(homeIconListener);
-        homeIcon.setBackgroundResource(R.drawable.close_b);
-
         //Activity Name
         TextView activityName = (TextView) findViewById(R.id.activityTitle);
 
-        if (purpose.equals(LFSAppConstants.NEW_COMMENT))
+        if (purpose.equals(LFSAppConstants.NEW_COMMENT)) {
+            commentEt.setHint("Write your comment here...");//setting hint to Edittext
             activityName.setText("New Comment");
+        }
         else if (purpose.equals(LFSAppConstants.NEW_REPLY)) {
+            commentEt.setHint("Write your Reply here...");//setting hint to Edittext
             activityName.setText("Reply");
             attachImageLL.setVisibility(View.GONE);//Hide Image Selection option
         } else if (purpose.equals(LFSAppConstants.EDIT)) {
             activityName.setText("Edit");
             attachImageLL.setVisibility(View.GONE);//Hide Image Selection option
         }
+
+        //Activity Icon
+        ImageView homeIcon = (ImageView) findViewById(R.id.activityIcon);
+        homeIcon.setBackgroundResource(R.drawable.close_b);
+
+        LinearLayout activityIconLL= (LinearLayout) findViewById(R.id.activityIconLL);
+        activityIconLL.setOnClickListener(homeIconListener);
+
         //Action
         TextView actionTv = (TextView) findViewById(R.id.actionTv);
-        actionTv.setVisibility(View.VISIBLE);
         actionTv.setText("POST");
-        actionTv.setOnClickListener(actionTvListener);
+
+        LinearLayout actionLL= (LinearLayout) findViewById(R.id.actionLL);
+        actionLL.setVisibility(View.VISIBLE);
+        actionLL.setOnClickListener(actionTvListener);
 
     }
 
@@ -180,6 +188,7 @@ public class NewActivity extends BaseActivity {
     }
 
     //Call backs
+
     //New Comment
     public class writeclientCallback extends JsonHttpResponseHandler {
 

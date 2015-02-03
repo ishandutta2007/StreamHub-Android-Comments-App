@@ -18,6 +18,7 @@ import com.livefyre.comments.LFSAppConstants;
 import com.livefyre.comments.LFSConfig;
 import com.livefyre.comments.LFUtils;
 import com.livefyre.comments.R;
+import com.livefyre.comments.RoundedTransformation;
 import com.livefyre.comments.models.ContentBean;
 import com.livefyre.comments.parsers.ContentParser;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -76,9 +77,8 @@ public class CommentActivity extends BaseActivity {
                         .fromHtml(comment.getBodyHtml())),
                 TextView.BufferType.SPANNABLE);
 
+        Picasso.with(getApplicationContext()).load(comment.getAuthor().getAvatar()).fit().transform(new RoundedTransformation(90, 0)).into(avatarIv);
 
-        Picasso.with(getApplicationContext()).load(comment.getAuthor().getAvatar()).fit()
-                .into(avatarIv);
     }
 
     private void getDataFromIntent() {
@@ -114,8 +114,10 @@ public class CommentActivity extends BaseActivity {
 
         //Activity Icon
         ImageView homeIcon = (ImageView) findViewById(R.id.activityIcon);
-        homeIcon.setOnClickListener(homeIconListener);
         homeIcon.setBackgroundResource(R.drawable.back);
+
+        LinearLayout activityIconLL= (LinearLayout) findViewById(R.id.activityIconLL);
+        activityIconLL.setOnClickListener(homeIconListener);
 
         //Activity Name
         TextView activityName = (TextView) findViewById(R.id.activityTitle);
