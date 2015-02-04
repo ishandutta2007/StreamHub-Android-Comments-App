@@ -5,6 +5,10 @@
     android:orientation="vertical"
     android:background="@color/colorWhite">
 
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/app_bar" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -14,9 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <include
-                android:id="@+id/app_bar"
-                layout="@layout/app_bar" />
 
             <include
                 android:id="@+id/comment_bar"
