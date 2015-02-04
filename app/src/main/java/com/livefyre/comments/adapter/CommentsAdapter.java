@@ -54,8 +54,6 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
 
             float density = mContext.getResources().getDisplayMetrics().density;
 
-
-
             int px = (int) (40 * density);
 
             switch (comment.getDepth()) {
@@ -118,6 +116,20 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
                 Picasso.with(mContext).load(comment.getAuthor().getAvatar()).fit().transform(new RoundedTransformation(90, 0)).into(holder.avatarIv);
             } else {
             }
+
+
+            if (comment.getOembedUrl() != null) {
+                if (comment.getOembedUrl().length() > 0) {
+                    holder.imageAttachedToCommentIv.setVisibility(View.VISIBLE);
+                    application.printLog(true,"comment.getOembedUrl()",comment.getOembedUrl()+" URL");
+                    Picasso.with(mContext).load(comment.getOembedUrl()).fit().into(holder.imageAttachedToCommentIv);
+                } else {
+                    holder.imageAttachedToCommentIv.setVisibility(View.GONE);
+                }
+            } else {
+                holder.imageAttachedToCommentIv.setVisibility(View.GONE);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
