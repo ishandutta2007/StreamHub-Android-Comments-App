@@ -501,12 +501,12 @@ public class CommentActivity extends BaseActivity {
 
         public void onSuccess(JSONObject responce) {
             Log.d("action ClientCall", "success" + responce);
+                dismissProgressDialog();
             if (!responce.isNull("data")) {
                 dismissProgressDialog();
                 showAlert("Comment Deleted Successfully", "OK", null);
             }
-            if (dialog.isShowing())
-                dismissProgressDialog();
+
         }
 
         @Override
