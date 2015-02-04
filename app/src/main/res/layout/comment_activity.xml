@@ -5,83 +5,94 @@
     android:orientation="vertical"
     android:background="@color/colorWhite">
 
-    <include
-        android:id="@+id/app_bar"
-        layout="@layout/app_bar" />
-
-    <include
-        android:id="@+id/comment_bar"
-        layout="@layout/comments_list_item"
-        />
-
-    <RelativeLayout
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="16dp"
-        android:id="@+id/commentActionsRL"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/likeLL"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <ImageView
+            <include
+                android:id="@+id/app_bar"
+                layout="@layout/app_bar" />
+
+            <include
+                android:id="@+id/comment_bar"
+                layout="@layout/comments_list_item" />
+
+            <RelativeLayout
                 android:layout_marginRight="8dp"
-                android:layout_centerVertical="true"
-                android:id="@+id/likeIv"
-                android:src="@drawable/unlike"
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
+                android:layout_marginLeft="16dp"
+                android:id="@+id/commentActionsRL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="32dp"
-                android:textColor="@color/black54"
-                android:textSize="14sp"
-                android:id="@+id/likeCountTv"
-                android:text="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:id="@+id/likeLL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_marginRight="8dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/likeIv"
+                        android:src="@drawable/unlike"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
+
+                    <TextView
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="32dp"
+                        android:textColor="@color/black54"
+                        android:textSize="14sp"
+                        android:id="@+id/likeCountTv"
+                        android:text="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/newReplyLL"
+                    android:layout_toRightOf="@+id/likeLL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="8dp"
+                        android:id="@+id/replyIv"
+                        android:src="@drawable/reply"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
+
+                    <TextView
+                        android:textColor="@color/black54"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="14sp"
+                        android:id="@+id/replyTv"
+                        android:text="REPLY"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+
+                <ImageView
+                    android:id="@+id/moreIv"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/more"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_marginTop="6dp"
+                android:background="@color/black54"
+                android:layout_width="match_parent"
+                android:layout_height=".5dp"></View>
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/newReplyLL"
-            android:layout_toRightOf="@+id/likeLL"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="8dp"
-                android:id="@+id/replyIv"
-                android:src="@drawable/reply"
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
-
-            <TextView
-                android:textColor="@color/black54"
-                android:layout_gravity="center_vertical"
-                android:textSize="14sp"
-                android:id="@+id/replyTv"
-                android:text="REPLY"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-
-        <ImageView
-            android:id="@+id/moreIv"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/more"
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
-
-    </RelativeLayout>
-    <View
-        android:layout_marginTop="6dp"
-        android:background="@color/black54"
-        android:layout_width="match_parent"
-        android:layout_height=".5dp"></View>
+    </ScrollView>
 </LinearLayout>
