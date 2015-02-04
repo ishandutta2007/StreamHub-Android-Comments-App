@@ -7,11 +7,11 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/flagDialog"
+        android:layout_above="@+id/emptyDialogSpace"
         android:background="#80000000"></LinearLayout>
 
     <LinearLayout
-        android:id="@+id/flagDialog"
+        android:id="@+id/emptyDialogSpace"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

@@ -296,7 +296,7 @@ public class CommentActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                flagDialog(id);
+                flagDialog(ContentParser.ContentCollection.get(contentId).getId());
                 dialog.dismiss();
             }
         });
@@ -370,9 +370,7 @@ public class CommentActivity extends BaseActivity {
     }
 
     private void flagDialog(final String id) {
-        final Dialog dialog = new Dialog(CommentActivity.this,
-                android.R.style.Theme_Translucent_NoTitleBar);
-
+        final Dialog dialog = new Dialog(this,android.R.style.Theme_Translucent_NoTitleBar);
         dialog.setTitle("");
         dialog.setContentView(R.layout.flag);
         dialog.setCancelable(true);
@@ -540,7 +538,7 @@ public class CommentActivity extends BaseActivity {
     private class flagCallback extends JsonHttpResponseHandler {
 
         public void onSuccess(JSONObject data) {
-            showToast("Content flagged successfully");
+            customToast();
 
         }
 
@@ -548,6 +546,9 @@ public class CommentActivity extends BaseActivity {
         public void onFailure(Throwable error, String content) {
             super.onFailure(error, content);
             dismissProgressDialog();
+            if(error!=null)
+                showToast(error.toString());
+                else
             showToast("Something went wrong.");
 
         }
@@ -593,7 +594,8 @@ public class CommentActivity extends BaseActivity {
         avatarIv = (ImageView) findViewById(R.id.avatarIv);
         imageAttachedToCommentIv = (ImageView) findViewById(R.id.imageAttachedToCommentIv);
         moreIv = (ImageView) findViewById(R.id.moreIv);
-
+        LinearLayout activityIconLL= (LinearLayout) findViewById(R.id.activityIconLL);
+        activityIconLL.setOnClickListener(homeIconListener);
     }
 
     private void setListenersToViews() {
@@ -617,8 +619,6 @@ public class CommentActivity extends BaseActivity {
 
         //Activity Name
         TextView activityName = (TextView) findViewById(R.id.activityTitle);
-
-
         activityName.setText("Comment");
 
     }
