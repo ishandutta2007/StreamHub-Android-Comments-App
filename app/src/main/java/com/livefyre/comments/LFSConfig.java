@@ -8,7 +8,7 @@ public class LFSConfig {
     public static final String FILEPICKER_API_KEY = "AYNlO8P2PT6qnCfo9eCw2z";
 
     //USERS
-    public static String USER= "eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJkb21haW4iOiAibGFicy5meXJlLmNvIiwgImV4cGlyZXMiOiAxMDE0MDM3Mjg1MTIuNTk0MTYsICJ1c2VyX2lkIjogImRlbW8wIn0.0u1odupwow0tzBFhNWYG1Vk8URLncMHYQCBhjjdBBL8";
+    public static String Demo= "eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJkb21haW4iOiAibGFicy5meXJlLmNvIiwgImV4cGlyZXMiOiAxMDE0MDM3Mjg1MTIuNTk0MTYsICJ1c2VyX2lkIjogImRlbW8wIn0.0u1odupwow0tzBFhNWYG1Vk8URLncMHYQCBhjjdBBL8";
     public static String ABCDEF="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkb21haW4iOiJsYWJzLmZ5cmUuY28iLCJ1c2VyX2lkIjoiQUJDREVGIiwiZGlzcGxheV9uYW1lIjoiQUJDREVGIiwiZXhwaXJlcyI6Mjg1ODczOTAwOC4yODYwMDAzfQ.43N4J6oSKRCgb7hKmR7HansiYbPNNt6bG4PVrWgFHpA";
 
     public static String USER_TOKEN = ABCDEF;

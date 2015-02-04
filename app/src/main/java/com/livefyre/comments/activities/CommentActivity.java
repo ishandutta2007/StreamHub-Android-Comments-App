@@ -612,7 +612,7 @@ public class CommentActivity extends BaseActivity {
 
         //Activity Icon
         ImageView homeIcon = (ImageView) findViewById(R.id.activityIcon);
-        homeIcon.setBackgroundResource(R.drawable.back);
+        homeIcon.setBackgroundResource(R.drawable.arrow_left);
 
         LinearLayout activityIconLL = (LinearLayout) findViewById(R.id.activityIconLL);
         activityIconLL.setOnClickListener(homeIconListener);
