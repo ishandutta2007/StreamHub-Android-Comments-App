@@ -575,6 +575,20 @@ public class CommentActivity extends BaseActivity {
 
         Picasso.with(getApplicationContext()).load(comment.getAuthor().getAvatar()).fit().transform(new RoundedTransformation(90, 0)).into(avatarIv);
 
+        if (comment.getOembedUrl() != null) {
+            if (comment.getOembedUrl().length() > 0) {
+                imageAttachedToCommentIv.setVisibility(View.VISIBLE);
+                application.printLog(true,"comment.getOembedUrl()",comment.getOembedUrl()+" URL");
+                Picasso.with(getApplication()).load(comment.getOembedUrl()).fit().into(imageAttachedToCommentIv);
+            } else {
+                imageAttachedToCommentIv.setVisibility(View.GONE);
+            }
+        } else {
+           imageAttachedToCommentIv.setVisibility(View.GONE);
+        }
+
+
+
     }
 
     private void getDataFromIntent() {
