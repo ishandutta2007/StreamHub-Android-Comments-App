@@ -541,14 +541,14 @@ public class CommentActivity extends BaseActivity {
                             .parseColor("#757575"));
                 }
 
-//                likeCountTv.setText(comment.getVote().size());
+                likeCountTv.setText(comment.getVote().size()+"");
 
             } else {
                 likeIv
                         .setImageResource(R.drawable.unlike);
                 likeCountTv.setTextColor(Color
                         .parseColor("#757575"));
-                likeCountTv.setText("");
+                likeCountTv.setText("0");
             }
 
         } else {
@@ -556,7 +556,7 @@ public class CommentActivity extends BaseActivity {
                     .setImageResource(R.drawable.unlike);
             likeCountTv
                     .setTextColor(Color.parseColor("#757575"));
-            likeCountTv.setText("");
+            likeCountTv.setText("0");
         }
     }
 
