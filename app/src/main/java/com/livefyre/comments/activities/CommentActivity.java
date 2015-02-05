@@ -2,8 +2,8 @@ package com.livefyre.comments.activities;
 
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -38,11 +38,11 @@ import livefyre.streamhub.WriteClient;
 
 public class CommentActivity extends BaseActivity {
     Toolbar toolbar;
-    TextView authorNameTv, postedDateOrTime, commentBody, moderatorTv, likesTv;
+    TextView authorNameTv, postedDateOrTime, commentBody, moderatorTv, likesTv,likeCountTv;
 
     LinearLayout featureLL, likeLL, newReplyLL;
 
-    ImageView avatarIv, imageAttachedToCommentIv, moreIv;
+    ImageView avatarIv, imageAttachedToCommentIv, moreIv,likeIv;
 
     private String contentId;
     @Override
@@ -54,7 +54,7 @@ public class CommentActivity extends BaseActivity {
 
         pullViews();
 
-        setData();
+        populateData();
 
         setListenersToViews();
 
@@ -65,12 +65,36 @@ public class CommentActivity extends BaseActivity {
     View.OnClickListener likeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            helpfulDialog(
-                    knowHelpfulValue(
-                            application
-                                    .getDataFromSharedPrefs(LFSAppConstants.ID, ""),
-                            ContentParser.ContentCollection.get(contentId).getVote()), ContentParser.ContentCollection.get(contentId).getId());
-        }
+            showProgressDialog();
+
+           int HFVal=knowHelpfulValue(
+                    application
+                            .getDataFromSharedPrefs(LFSAppConstants.ID, ""),
+                    ContentParser.ContentCollection.get(contentId).getVote());
+
+
+            if (HFVal == 1) {
+                    RequestParams parameters = new RequestParams();
+                    parameters.put("value", "0");
+                    parameters.put(LFSConstants.LFSPostUserTokenKey,
+                            LFSConfig.USER_TOKEN);
+                    parameters.put("message_id", ContentParser.ContentCollection.get(contentId).getId());
+
+                    WriteClient.postAction(LFSConfig.COLLECTION_ID, ContentParser.ContentCollection.get(contentId).getId(),
+                            LFSConfig.USER_TOKEN, LFSActions.VOTE, parameters,
+                            new helpfulCallback());
+                } else {
+                    RequestParams parameters = new RequestParams();
+                    parameters.put("value", "1");
+                    parameters.put(LFSConstants.LFSPostUserTokenKey,
+                            LFSConfig.USER_TOKEN);
+                    parameters.put("message_id", ContentParser.ContentCollection.get(contentId).getId());
+
+                    WriteClient.postAction(LFSConfig.COLLECTION_ID, ContentParser.ContentCollection.get(contentId).getId(),
+                            LFSConfig.USER_TOKEN, LFSActions.VOTE, parameters,
+                            new helpfulCallback());
+
+        }}
     };
 
     int knowHelpfulValue(String authorId, List<Vote> v) {
@@ -92,97 +116,7 @@ public class CommentActivity extends BaseActivity {
         return helpfulValue;
     }
 
-    private void helpfulDialog(final int HFVal, final String id) {
-        final Dialog dialog = new Dialog(this,
-                android.R.style.Theme_Translucent_NoTitleBar);
 
-        dialog.setTitle("");
-        dialog.setContentView(R.layout.helpfull_dialog);
-        dialog.setCancelable(true);
-
-        LinearLayout emptyDialogSpace = (LinearLayout) dialog
-                .findViewById(R.id.emptyDialogSpace);
-        emptyDialogSpace.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-
-            }
-        });
-
-        LinearLayout helpful = (LinearLayout) dialog.findViewById(R.id.helpful);
-        helpful.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                showProgressDialog();
-                if (HFVal == 1) {
-                    RequestParams perameters = new RequestParams();
-                    perameters.put("value", "0");
-                    perameters.put(LFSConstants.LFSPostUserTokenKey,
-                            LFSConfig.USER_TOKEN);
-                    perameters.put("message_id", id);
-
-                    WriteClient.postAction(LFSConfig.COLLECTION_ID, id,
-                            LFSConfig.USER_TOKEN, LFSActions.VOTE, perameters,
-                            new helpfulCallback());
-                    dialog.dismiss();
-                } else {
-                    RequestParams perameters = new RequestParams();
-                    perameters.put("value", "1");
-                    perameters.put(LFSConstants.LFSPostUserTokenKey,
-                            LFSConfig.USER_TOKEN);
-                    perameters.put("message_id", id);
-
-                    WriteClient.postAction(LFSConfig.COLLECTION_ID, id,
-                            LFSConfig.USER_TOKEN, LFSActions.VOTE, perameters,
-                            new helpfulCallback());
-                    dialog.dismiss();
-
-                }
-
-            }
-        });
-
-        LinearLayout notHelpful = (LinearLayout) dialog
-                .findViewById(R.id.notHelpful);
-        notHelpful.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                showProgressDialog();
-                if (HFVal == 2) {
-                    RequestParams perameters = new RequestParams();
-                    perameters.put("value", "0");
-                    perameters.put(LFSConstants.LFSPostUserTokenKey,
-                            LFSConfig.USER_TOKEN);
-                    perameters.put("message_id", id);
-
-                    WriteClient.postAction(LFSConfig.COLLECTION_ID, id,
-                            LFSConfig.USER_TOKEN, LFSActions.VOTE, perameters,
-                            new helpfulCallback());
-                    dialog.dismiss();
-                } else {
-                    RequestParams perameters = new RequestParams();
-                    perameters.put("value", "2");
-                    perameters.put(LFSConstants.LFSPostUserTokenKey,
-                            LFSConfig.USER_TOKEN);
-                    perameters.put("message_id", id);
-
-                    WriteClient.postAction(LFSConfig.COLLECTION_ID, id,
-                            LFSConfig.USER_TOKEN, LFSActions.VOTE, perameters,
-                            new helpfulCallback());
-                    dialog.dismiss();
-
-                }
-
-            }
-        });
-        dialog.show();
-
-    }
 
     private void moreDialog(final String id, final Boolean isFeatured) {
         ContentBean mBean = ContentParser.ContentCollection.get(contentId);
@@ -296,8 +230,9 @@ public class CommentActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                flagDialog(ContentParser.ContentCollection.get(contentId).getId());
                 dialog.dismiss();
+                flagDialog(ContentParser.ContentCollection.get(contentId).getId());
+
             }
         });
 
@@ -307,13 +242,13 @@ public class CommentActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 showProgressDialog();
-                RequestParams perameters = new RequestParams();
-                perameters.put(LFSConstants.LFSPostUserTokenKey,
+                RequestParams parameters = new RequestParams();
+                parameters.put(LFSConstants.LFSPostUserTokenKey,
                         LFSConfig.USER_TOKEN);
-                perameters.put("message_id", id);
+                parameters.put("message_id", id);
 
                 WriteClient.postAction(LFSConfig.COLLECTION_ID, id,
-                        LFSConfig.USER_TOKEN, LFSActions.BOZO, perameters,
+                        LFSConfig.USER_TOKEN, LFSActions.BOZO, parameters,
                         new actionCallback());
                 dialog.dismiss();
             }
@@ -324,13 +259,13 @@ public class CommentActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 showProgressDialog();
-                RequestParams perameters = new RequestParams();
-                perameters.put("network", LFSConfig.NETWORK_ID);
-                perameters.put(LFSConstants.LFSPostUserTokenKey,
+                RequestParams parameters = new RequestParams();
+                parameters.put("network", LFSConfig.NETWORK_ID);
+                parameters.put(LFSConstants.LFSPostUserTokenKey,
                         LFSConfig.USER_TOKEN);
-                perameters.put("retroactive", "0");
+                parameters.put("retroactive", "0");
                 WriteClient.flagAuthor(ContentParser.ContentCollection.get(id)
-                                .getAuthorId(), LFSConfig.USER_TOKEN, perameters,
+                                .getAuthorId(), LFSConfig.USER_TOKEN, parameters,
                         new actionCallback());
 
                 dialog.dismiss();
@@ -389,13 +324,13 @@ public class CommentActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                RequestParams perameters = new RequestParams();
-                perameters.put(LFSConstants.LFSPostUserTokenKey,
+                RequestParams parameters = new RequestParams();
+                parameters.put(LFSConstants.LFSPostUserTokenKey,
                         LFSConfig.USER_TOKEN);
-                perameters.put("message_id", id);
+                parameters.put("message_id", id);
 
                 WriteClient.flagContent(LFSConfig.COLLECTION_ID, id,
-                        LFSConfig.USER_TOKEN, LFSFlag.SPAM, perameters,
+                        LFSConfig.USER_TOKEN, LFSFlag.SPAM, parameters,
                         new flagCallback());
                 dialog.dismiss();
 
@@ -408,13 +343,13 @@ public class CommentActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                RequestParams perameters = new RequestParams();
-                perameters.put(LFSConstants.LFSPostUserTokenKey,
+                RequestParams parameters = new RequestParams();
+                parameters.put(LFSConstants.LFSPostUserTokenKey,
                         LFSConfig.USER_TOKEN);
-                perameters.put("message_id", id);
+                parameters.put("message_id", id);
 
                 WriteClient.flagContent(LFSConfig.COLLECTION_ID, id,
-                        LFSConfig.USER_TOKEN, LFSFlag.OFFENSIVE, perameters,
+                        LFSConfig.USER_TOKEN, LFSFlag.OFFENSIVE, parameters,
                         new flagCallback());
                 dialog.dismiss();
 
@@ -427,13 +362,13 @@ public class CommentActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                RequestParams perameters = new RequestParams();
-                perameters.put(LFSConstants.LFSPostUserTokenKey,
+                RequestParams parameters = new RequestParams();
+                parameters.put(LFSConstants.LFSPostUserTokenKey,
                         LFSConfig.USER_TOKEN);
-                perameters.put("message_id", id);
+                parameters.put("message_id", id);
 
                 WriteClient.flagContent(LFSConfig.COLLECTION_ID, id,
-                        LFSConfig.USER_TOKEN, LFSFlag.OFF_TOPIC, perameters,
+                        LFSConfig.USER_TOKEN, LFSFlag.OFF_TOPIC, parameters,
                         new flagCallback());
                 dialog.dismiss();
 
@@ -446,13 +381,13 @@ public class CommentActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                RequestParams perameters = new RequestParams();
-                perameters.put(LFSConstants.LFSPostUserTokenKey,
+                RequestParams parameters = new RequestParams();
+                parameters.put(LFSConstants.LFSPostUserTokenKey,
                         LFSConfig.USER_TOKEN);
-                perameters.put("message_id", id);
+                parameters.put("message_id", id);
 
                 WriteClient.flagContent(LFSConfig.COLLECTION_ID, id,
-                        LFSConfig.USER_TOKEN, LFSFlag.DISAGREE, perameters,
+                        LFSConfig.USER_TOKEN, LFSFlag.DISAGREE, parameters,
                         new flagCallback());
                 dialog.dismiss();
 
@@ -489,11 +424,6 @@ public class CommentActivity extends BaseActivity {
             finish();
         }
     };
-
-
-
-
-
 
     //Call backs
 
@@ -545,7 +475,7 @@ public class CommentActivity extends BaseActivity {
         @Override
         public void onFailure(Throwable error, String content) {
             super.onFailure(error, content);
-            dismissProgressDialog();
+           dismissProgressDialog();
             if(error!=null)
                 showToast(error.toString());
                 else
@@ -555,13 +485,7 @@ public class CommentActivity extends BaseActivity {
 
     }
 
-    private ProgressDialog dialog;
-
-
-
-
-
-    private void setData() {
+    private void populateData() {
         ContentBean comment = ContentParser.ContentCollection.get(contentId);
         //Author Name
         authorNameTv.setText(comment.getAuthor().getDisplayName());
@@ -588,7 +512,52 @@ public class CommentActivity extends BaseActivity {
         }
 
 
+        if (comment.getVote() != null) {// know helpful value and set color
 
+            if (comment.getVote().size() > 0) {
+               int  helpfulFlag = 0;
+
+                helpfulFlag = knowHelpfulValue(
+                        application
+                                .getDataFromSharedPrefs(LFSAppConstants.ID,""),
+                        comment.getVote());
+
+
+
+                if (helpfulFlag == 1) {
+                    likeIv
+                            .setImageResource(R.drawable.like);
+                    likeCountTv.setTextColor(Color
+                            .parseColor("#e85b3f"));
+                } else if (helpfulFlag == 2) {
+                    likeIv
+                            .setImageResource(R.drawable.unlike);
+                    likeCountTv.setTextColor(Color
+                            .parseColor("#757575"));
+                } else {
+                    likeIv
+                            .setImageResource(R.drawable.unlike);
+                    likeCountTv.setTextColor(Color
+                            .parseColor("#757575"));
+                }
+
+//                likeCountTv.setText(comment.getVote().size());
+
+            } else {
+                likeIv
+                        .setImageResource(R.drawable.unlike);
+                likeCountTv.setTextColor(Color
+                        .parseColor("#757575"));
+                likeCountTv.setText("");
+            }
+
+        } else {
+            likeIv
+                    .setImageResource(R.drawable.unlike);
+            likeCountTv
+                    .setTextColor(Color.parseColor("#757575"));
+            likeCountTv.setText("");
+        }
     }
 
     private void getDataFromIntent() {
@@ -602,10 +571,12 @@ public class CommentActivity extends BaseActivity {
         commentBody = (TextView) findViewById(R.id.commentBody);
         likesTv = (TextView) findViewById(R.id.likesTv);
         moderatorTv = (TextView) findViewById(R.id.moderatorTv);
+        likeCountTv = (TextView) findViewById(R.id.likesCountTv);
         featureLL = (LinearLayout) findViewById(R.id.featureLL);
         newReplyLL = (LinearLayout) findViewById(R.id.newReplyLL);
         likeLL = (LinearLayout) findViewById(R.id.likeLL);
         avatarIv = (ImageView) findViewById(R.id.avatarIv);
+        likeIv = (ImageView) findViewById(R.id.likeIv);
         imageAttachedToCommentIv = (ImageView) findViewById(R.id.imageAttachedToCommentIv);
         moreIv = (ImageView) findViewById(R.id.moreIv);
         LinearLayout activityIconLL= (LinearLayout) findViewById(R.id.activityIconLL);

@@ -50,7 +50,8 @@
                         android:id="@+id/capturedImage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:scaleType="centerCrop"
+                        android:scaleType="fitXY"
+                        android:adjustViewBounds="true"
                         android:background="@drawable/white_image"
                          />
 

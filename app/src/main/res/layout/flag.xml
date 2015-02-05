@@ -5,13 +5,15 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/emptyDialogSpace"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/emptyDialogSpace"
+        android:layout_above="@+id/dialogSpaceFlag"
         android:background="#80000000"></LinearLayout>
 
     <LinearLayout
-        android:id="@+id/emptyDialogSpace"
+        android:id="@+id/dialogSpaceFlag"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -19,21 +21,25 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:layout_marginBottom="16dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <ImageView
+                android:layout_gravity="center_vertical"
                 android:layout_marginRight="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/close_b" />
 
             <TextView
+               android:paddingLeft="16dp"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/black87"
                 android:gravity="center_vertical"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
-                android:layout_marginBottom="16dp"
+                android:layout_height="wrap_content"
                 android:text="Flags"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -47,6 +53,7 @@
             android:orientation="horizontal">
 
             <ImageView
+
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_vertical"
