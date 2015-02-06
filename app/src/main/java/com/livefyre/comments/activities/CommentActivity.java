@@ -311,6 +311,16 @@ public class CommentActivity extends BaseActivity {
         dialog.setCancelable(true);
         LinearLayout emptyDialogSpace = (LinearLayout) dialog
                 .findViewById(R.id.emptyDialogSpace);
+        ImageView flagClose=(ImageView) dialog
+                .findViewById(R.id.flagClose);
+        flagClose.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+            }
+        });
         emptyDialogSpace.setOnClickListener(new View.OnClickListener() {
 
             @Override

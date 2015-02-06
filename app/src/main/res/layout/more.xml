@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_gravity="bottom" >
+    android:layout_gravity="bottom">
 
     <LinearLayout
         android:id="@+id/emptyDialogSpace"
@@ -10,175 +10,179 @@
         android:layout_height="fill_parent"
         android:layout_above="@+id/mainDialog"
         android:background="#80000000"
-        android:orientation="vertical" >
-    </LinearLayout>
+        android:orientation="vertical"></LinearLayout>
 
     <LinearLayout
+        android:orientation="vertical"
         android:id="@+id/mainDialog"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#ffffff"
-        android:orientation="vertical"
-        android:paddingBottom="8dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="8dp" >
+        android:background="#ffffff">
 
         <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/edit" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:text="Edit"
-                android:textColor="@color/black54"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/feature"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/feature" />
-
-            <TextView
-                android:id="@+id/alreadyFeatured"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:text="Feature"
-                android:textColor="@color/black54"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-        <View
-            android:visibility="gone"
-            android:id="@+id/moreLine"
             android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="8dp"
-            android:background="#d6d6d6" />
-
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/flag"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="vertical"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/flag" />
-
-            <TextView
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/edit"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:text="Flag"
-                android:textColor="@color/black54"
-                android:textSize="16sp" />
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/bozo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/edit" />
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/bozo" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="Edit"
+                    android:textColor="@color/black54"
+                    android:textSize="16sp" />
+            </LinearLayout>
 
-            <TextView
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/feature"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:text="Bozo"
-                android:textColor="@color/black54"
-                android:textSize="16sp" />
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/banUser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/feature" />
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/ban" />
+                <TextView
+                    android:id="@+id/alreadyFeatured"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="Feature"
+                    android:textColor="@color/black54"
+                    android:textSize="16sp" />
+            </LinearLayout>
 
-            <TextView
+            <View
+                android:visibility="gone"
+                android:id="@+id/moreLine"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="8dp"
+                android:background="#d6d6d6" />
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/flag"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:text="Ban User"
-                android:textColor="@color/black54"
-                android:textSize="16sp" />
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/delete"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/flag" />
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/trash" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="Flag"
+                    android:textColor="@color/black54"
+                    android:textSize="16sp" />
+            </LinearLayout>
 
-            <TextView
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/bozo"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:text="Delete"
-                android:textColor="@color/black54"
-                android:textSize="16sp" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/bozo" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="Bozo"
+                    android:textColor="@color/black54"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/banUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/ban" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="Ban User"
+                    android:textColor="@color/black54"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/delete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/trash" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:text="Delete"
+                    android:textColor="@color/black54"
+                    android:textSize="16sp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
 </RelativeLayout>
