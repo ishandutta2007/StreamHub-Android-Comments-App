@@ -65,31 +65,31 @@ public class LFUtils {
 				return "Posted Just Now";
 			} else if (diffMinutes < 1) {
 				if (diffSeconds == 1)
-					return "Posted " +diffSeconds+" Second ago";
+					return diffSeconds+" Second ago";
 				else
-					return "Posted " +diffSeconds+" Seconds ago";
+					return diffSeconds+" Seconds ago";
 				
 				
 			} else if (diffHours < 1) {
 				if (diffMinutes == 1)
-					return "Posted " +diffMinutes+" Month ago";
+					return diffMinutes+" Month ago";
 				else
-					return "Posted " +diffMinutes+" Months ago";
+					return diffMinutes+" Months ago";
 			} else if (diffDays < 1) {
 				if (diffHours == 1)
-					return "Posted " +diffHours+" hour ago";
+					return diffHours+" hour ago";
 				else
-					return "Posted " +diffHours+" hours ago";
+					return diffHours+" hours ago";
 			} else if (diffDays < 7) {
 				if (diffDays == 1)
-					return "Posted " +diffDays+" day ago";
+					return diffDays+" day ago";
 				else
-					return "Posted " +diffDays+" days ago";
+					return diffDays+" days ago";
 			} else {
 				
 				
 				
-				return "Posted on "+sdf.format(commentTime.getTime());
+				return sdf.format(commentTime.getTime());
 			}
 		}
 	}

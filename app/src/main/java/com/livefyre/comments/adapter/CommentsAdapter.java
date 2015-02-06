@@ -160,7 +160,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
             authorNameTv = (TextView) item.findViewById(R.id.authorNameTv);
             postedDateOrTime = (TextView) item.findViewById(R.id.postedDateOrTime);
             commentBody = (TextView) item.findViewById(R.id.commentBody);
-            likesTv = (TextView) item.findViewById(R.id.likesTv);
+            likesTv = (TextView) item.findViewById(R.id.likesFullTv);
             moderatorTv = (TextView) item.findViewById(R.id.moderatorTv);
             featureLL = (LinearLayout) item.findViewById(R.id.featureLL);
 

@@ -143,14 +143,15 @@
         android:visibility="gone" />
 
     <TextView
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
         android:textColor="@color/black54"
         android:textSize="14sp"
-        android:visibility="gone"
-        android:id="@+id/likesTv"
+        android:id="@+id/likesFullTv"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="sample" />
+        />
 
     <View
         android:layout_marginTop="8dp"

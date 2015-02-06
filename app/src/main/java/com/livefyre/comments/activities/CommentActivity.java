@@ -38,7 +38,7 @@ import livefyre.streamhub.WriteClient;
 
 public class CommentActivity extends BaseActivity {
     Toolbar toolbar;
-    TextView authorNameTv, postedDateOrTime, commentBody, moderatorTv, likesTv,likeCountTv;
+    TextView authorNameTv, postedDateOrTime, commentBody, moderatorTv, likesTv,likeCountTv,likesFullTv;
 
     LinearLayout featureLL, likeLL, newReplyLL;
 
@@ -532,8 +532,6 @@ public class CommentActivity extends BaseActivity {
                                 .getDataFromSharedPrefs(LFSAppConstants.ID,""),
                         comment.getVote());
 
-
-
                 if (helpfulFlag == 1) {
                     likeIv
                             .setImageResource(R.drawable.like);
@@ -568,6 +566,10 @@ public class CommentActivity extends BaseActivity {
                     .setTextColor(Color.parseColor("#757575"));
             likeCountTv.setText("0");
         }
+
+        likesFullTv.setVisibility(View.VISIBLE);
+        likesFullTv.setText(LFUtils.getFormatedDate(
+                comment.getCreatedAt(), LFSAppConstants.DETAIL));
     }
 
     private void getDataFromIntent() {
@@ -579,12 +581,13 @@ public class CommentActivity extends BaseActivity {
         authorNameTv = (TextView) findViewById(R.id.authorNameTv);
         postedDateOrTime = (TextView) findViewById(R.id.postedDateOrTime);
         commentBody = (TextView) findViewById(R.id.commentBody);
-        likesTv = (TextView) findViewById(R.id.likesTv);
+        likesTv = (TextView) findViewById(R.id.likesFullTv);
         moderatorTv = (TextView) findViewById(R.id.moderatorTv);
         likeCountTv = (TextView) findViewById(R.id.likesCountTv);
         featureLL = (LinearLayout) findViewById(R.id.featureLL);
         newReplyLL = (LinearLayout) findViewById(R.id.newReplyLL);
         likeLL = (LinearLayout) findViewById(R.id.likeLL);
+        likesFullTv = (TextView) findViewById(R.id.likesFullTv);
         avatarIv = (ImageView) findViewById(R.id.avatarIv);
         likeIv = (ImageView) findViewById(R.id.likeIv);
         imageAttachedToCommentIv = (ImageView) findViewById(R.id.imageAttachedToCommentIv);
