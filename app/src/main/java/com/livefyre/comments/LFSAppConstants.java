@@ -18,4 +18,9 @@ public class LFSAppConstants {
     public static String NEW_COMMENT ="newComment";
     public static String EDIT="Edit";
     public static String BODY="body";
+
+    public static String IS_FIRST_TIME_STR ="isFirstTime";
+    public static String IS_NOT_FIRST_TIME ="false";
+    public static String IS_FIRST_TIME="true";
+
 }

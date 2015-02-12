@@ -1,13 +1,14 @@
 package com.livefyre.comments;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.livefyre.comments.activities.SplashActivity;
 import com.livefyre.comments.models.ContentBean;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class LFCApplication extends Application {
 
@@ -21,6 +22,11 @@ public class LFCApplication extends Application {
 
         AppSingleton.getInstance().setApplication(this);
         init();
+        boolean isFirstTime = Boolean.parseBoolean(getDataFromSharedPrefs(LFSAppConstants.IS_FIRST_TIME_STR, LFSAppConstants.IS_FIRST_TIME));
+        if (isFirstTime) {
+            ShortcutIcon();
+            putDataInSharedPref(LFSAppConstants.IS_FIRST_TIME_STR, LFSAppConstants.IS_NOT_FIRST_TIME);
+        }
     }
 
     private void init() {
@@ -56,5 +62,19 @@ public class LFCApplication extends Application {
 
     public ArrayList<ContentBean> getContentCollection() {
         return contentCollection;
+    }
+
+    private void ShortcutIcon() {
+
+        Intent shortcutIntent = new Intent(getApplicationContext(), SplashActivity.class);
+        shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        Intent addIntent = new Intent();
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Livefyre Comments");
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.splash));
+        addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        getApplicationContext().sendBroadcast(addIntent);
     }
 }
