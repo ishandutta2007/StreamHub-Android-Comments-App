@@ -4,14 +4,14 @@
     android:layout_height="match_parent"
     android:background="#ffffff">
 
+
     <ListView
         android:background="#ffffff"
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/linearLayout1"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" >
+        android:layout_alignParentLeft="true">
 
     </ListView>
 
@@ -24,12 +24,12 @@
         android:layout_centerVertical="true" />
 
     <GridView
+        android:layout_below="@+id/topBar"
         android:id="@+id/gridView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/linearLayout1"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:gravity="fill"
         android:numColumns="3"
         android:verticalSpacing="2dp"
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" >
+        android:layout_alignParentRight="true">
 
         <EditText
             android:id="@+id/editText1"

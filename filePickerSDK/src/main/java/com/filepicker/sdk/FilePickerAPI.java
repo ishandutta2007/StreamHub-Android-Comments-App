@@ -1,20 +1,16 @@
 package com.filepicker.sdk;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.util.ArrayList;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.net.http.AndroidHttpClient;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -39,17 +35,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.net.http.AndroidHttpClient;
-import android.os.AsyncTask;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 
 
 public class FilePickerAPI {
@@ -128,34 +128,34 @@ public class FilePickerAPI {
     public ArrayList<Service> getProviders() {
         ArrayList<Service> services = new ArrayList<Service>();
         services.add(new Service("Gallery", "/Gallery/",
-                new String[]{"image/*"}, R.drawable.glyphicons_008_film,
+                new String[]{"image/*"}, R.drawable.image,
                 false, ""));
         services.add(new Service("Camera", "/Camera/",
-                new String[]{"image/jpg"}, R.drawable.glyphicons_011_camera,
+                new String[]{"image/jpg"}, R.drawable.camera_b,
                 false, ""));
         services.add(new Service("Dropbox", "/Dropbox/",
-                new String[] { "*/*" }, R.drawable.glyphicons_361_dropbox,
+                new String[] { "*/*" }, R.drawable.dropbox,
                 true, "dropbox"));
         services.add(new Service("Facebook", "/Facebook/",
-                new String[] { "image/*" }, R.drawable.glyphicons_390_facebook,
+                new String[] { "image/*" }, R.drawable.facebook,
                 true, "facebook"));
         services.add(new Service("Instagram", "/Instagram/",
                 new String[] { "image/*" }, R.drawable.instagram,
                 true, "instagram"));
         services.add(new Service("Flickr", "/Flickr/",
-                new String[] { "image/*" }, R.drawable.glyphicons_395_flickr,
+                new String[] { "image/*" }, R.drawable.flickr,
                 true, "flickr"));
         services.add(new Service("Picasa", "/Picasa/",
-                new String[] { "image/*" }, R.drawable.glyphicons_366_picasa,
+                new String[] { "image/*" }, R.drawable.picasa,
                 true, "picasa"));
         services.add(new Service("Box", "/Box/", new String[] { "*/*" },
-                R.drawable.glyphicons_154_show_big_thumbnails, true, "box"));
-        services.add(new Service("Gmail", "/Gmail/", new String[] { "*/*" },
-                R.drawable.glyphicons_399_email, false, "gmail"));
-        services.add(new Service("Github", "/Github/", new String[] { "*/*" },
-                R.drawable.glyphicons_381_github, false, "github"));
+                R.drawable.box, true, "box"));
+//        services.add(new Service("Gmail", "/Gmail/", new String[] { "*/*" },
+//                R.drawable.glyphicons_399_email, false, "gmail"));
+//        services.add(new Service("Github", "/Github/", new String[] { "*/*" },
+//                R.drawable.glyphicons_381_github, false, "github"));
         services.add(new Service("Google Drive", "/GDrive/",
-                new String[] { "*/*" }, R.drawable.gdrive, false, "gdrive"));
+                new String[] { "*/*" }, R.drawable.google_drive, false, "gdrive"));
         return services;
     }
 

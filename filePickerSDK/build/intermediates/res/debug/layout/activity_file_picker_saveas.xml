@@ -4,14 +4,39 @@
     android:layout_height="match_parent"
     android:background="#ffffff">
 
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:orientation="horizontal"
+        android:background="#ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <ImageView
+            android:src="@drawable/ic_launcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginLeft="32dp"
+            android:text="Add Photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
     <ListView
+        android:layout_below="@+id/topBar"
         android:background="#ffffff"
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/linearLayout1"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" >
+        >
 
     </ListView>
 
@@ -24,12 +49,12 @@
         android:layout_centerVertical="true" />
 
     <GridView
+        android:layout_below="@+id/topBar"
         android:id="@+id/gridView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/linearLayout1"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:gravity="fill"
         android:numColumns="3"
         android:verticalSpacing="2dp"
@@ -43,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" >
+        android:layout_alignParentRight="true">
 
         <EditText
             android:id="@+id/editText1"
@@ -66,4 +91,4 @@
     </LinearLayout>
 
 </RelativeLayout>
-<!-- From: file:/Users/kvanadev5/Developer/android/projects/livefyre-comments-android/filePickerSDK/src/main/res/layout/activity_file_picker_saveas.xml -->
+<!-- From: file:/Users/kvanadev5/Developer/android/projects/livefyre/livefyre-comments-android/filePickerSDK/src/main/res/layout/activity_file_picker_saveas.xml -->

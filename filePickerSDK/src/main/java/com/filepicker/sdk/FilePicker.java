@@ -43,11 +43,13 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB) @SuppressLint("NewApi") public class FilePicker extends Activity {
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+@SuppressLint("NewApi")
+public class FilePicker extends Activity {
     public static final String SAVE_CONTENT = "SAVE_CONTENT";
 
     public static final String PREFS_NAME = "filepicker";
-
+    LinearLayout closeFilepicker;
     private ListView listview;
     private GridView gridview;
     private AdapterView<? extends android.widget.Adapter> currentview = null;
@@ -92,11 +94,11 @@ import java.util.regex.Pattern;
 
             ImageView icon = new ImageView(FilePicker.this);
             icon.setImageResource(inode.getImageResource());
-            icon.setPadding(14, 18, 12, 16);
+            icon.setPadding(14, 18, 40, 16);
             addView(icon);
 
             if (inode.isDisabled())
-                textView.setTextColor(Color.GRAY);
+                textView.setTextColor(Color.WHITE);
             if (thumbnail) {
                 textView.setTextColor(Color.WHITE);
                 icon.setColorFilter(0xffffffff, Mode.XOR);
@@ -226,7 +228,7 @@ import java.util.regex.Pattern;
                                         FilePickerAPI.REQUEST_CODE_GETFILE_LOCAL);
                             } else if (inode.getDisplayName().equals("Camera")) {
                                 Intent intent;
-                                if(hasImageCaptureBug()){
+                                if (hasImageCaptureBug()) {
                                     Uri newImageUri = null;
                                     File path = new File(Environment.getExternalStorageDirectory().getPath() + "/Images");
                                     path.mkdirs();
@@ -289,7 +291,7 @@ import java.util.regex.Pattern;
 
     public boolean hasImageCaptureBug() {
         // list of known devices that have the bug
-        ArrayList <String> devices = new ArrayList<String>();
+        ArrayList<String> devices = new ArrayList<String>();
         devices.add("android-devphone1/dream_devphone/dream");
         devices.add("generic/sdk/generic");
         devices.add("vodafone/vfpioneer/sapphire");
@@ -471,19 +473,22 @@ import java.util.regex.Pattern;
         new SaveFileTask().execute(path + "/" + filename);
 
     }
+
     OnClickListener finishAct = new OnClickListener() {
 
-		@Override
-		public void onClick(View v) {
-			finish();
-		}
-	};
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB) @Override
+        @Override
+        public void onClick(View v) {
+            finish();
+        }
+    };
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //Check for API key and finish if not set
-        if (!FilePickerAPI.isKeySet()) { 
+        if (!FilePickerAPI.isKeySet()) {
             Toast.makeText(this, "No Filepicker.io API Key set!",
                     Toast.LENGTH_LONG).show();
             setResult(RESULT_CANCELED);
@@ -522,8 +527,7 @@ import java.util.regex.Pattern;
 //		appIcon.setClickable(true);
 //		appIcon.setOnClickListener(finishAct);
 
-		
-		
+
 //		    actionBar.setDisplayOptions(actionBar.getDisplayOptions()
 //		            | ActionBar.DISPLAY_SHOW_CUSTOM);
 //		    ImageView imageView = new ImageView(actionBar.getThemedContext());
@@ -536,8 +540,8 @@ import java.util.regex.Pattern;
 //		    layoutParams.rightMargin = 40;
 //		    imageView.setLayoutParams(layoutParams);
 //		    actionBar.setCustomView(imageView);
-		
-		
+
+
 //        if (path.equals("/")) {
 ////            actionBar.setSubtitle("Please choose a file");
 //        } 
@@ -592,10 +596,18 @@ import java.util.regex.Pattern;
         listview.setVisibility(View.INVISIBLE);
         gridview = (GridView) findViewById(R.id.gridView1);
         gridview.setVisibility(View.INVISIBLE);
-
+        closeFilepicker = (LinearLayout) findViewById(R.id.closeFilepicker);
+        closeFilepicker.setOnClickListener(closeFilepickerListener);
         new FpapiTask().execute(5L);
     }
-   
+
+    OnClickListener closeFilepickerListener = new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            finish();
+        }
+    };
+
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {
 //        switch (item.getItemId()) {
