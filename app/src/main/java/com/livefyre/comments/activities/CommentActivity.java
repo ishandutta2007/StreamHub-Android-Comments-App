@@ -38,13 +38,14 @@ import livefyre.streamhub.WriteClient;
 
 public class CommentActivity extends BaseActivity {
     Toolbar toolbar;
-    TextView authorNameTv, postedDateOrTime, commentBody, moderatorTv, likesTv,likeCountTv,likesFullTv;
+    TextView authorNameTv, postedDateOrTime, commentBody, moderatorTv, likesTv, likeCountTv, likesFullTv;
 
     LinearLayout featureLL, likeLL, newReplyLL;
 
-    ImageView avatarIv, imageAttachedToCommentIv, moreIv,likeIv;
+    ImageView avatarIv, imageAttachedToCommentIv, moreIv, likeIv;
 
     private String contentId;
+    ContentBean comment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,15 +66,18 @@ public class CommentActivity extends BaseActivity {
     View.OnClickListener likeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            showProgressDialog();
 
-           int HFVal=knowHelpfulValue(
-                    application
-                            .getDataFromSharedPrefs(LFSAppConstants.ID, ""),
-                    ContentParser.ContentCollection.get(contentId).getVote());
+            if (!comment.getAuthorId().equals(
+                    application.getDataFromSharedPrefs(LFSAppConstants.ID, ""))) {
+                showProgressDialog();
+
+                int HFVal = knowHelpfulValue(
+                        application
+                                .getDataFromSharedPrefs(LFSAppConstants.ID, ""),
+                        ContentParser.ContentCollection.get(contentId).getVote());
 
 
-            if (HFVal == 1) {
+                if (HFVal == 1) {
                     RequestParams parameters = new RequestParams();
                     parameters.put("value", "0");
                     parameters.put(LFSConstants.LFSPostUserTokenKey,
@@ -94,7 +98,11 @@ public class CommentActivity extends BaseActivity {
                             LFSConfig.USER_TOKEN, LFSActions.VOTE, parameters,
                             new helpfulCallback());
 
-        }}
+                }
+            } else {
+                showToast("You con't like your own comment.");
+            }
+        }
     };
 
     int knowHelpfulValue(String authorId, List<Vote> v) {
@@ -115,7 +123,6 @@ public class CommentActivity extends BaseActivity {
 
         return helpfulValue;
     }
-
 
 
     private void moreDialog(final String id, final Boolean isFeatured) {
@@ -305,13 +312,13 @@ public class CommentActivity extends BaseActivity {
     }
 
     private void flagDialog(final String id) {
-        final Dialog dialog = new Dialog(this,android.R.style.Theme_Translucent_NoTitleBar);
+        final Dialog dialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar);
         dialog.setTitle("");
         dialog.setContentView(R.layout.flag);
         dialog.setCancelable(true);
         LinearLayout emptyDialogSpace = (LinearLayout) dialog
                 .findViewById(R.id.emptyDialogSpace);
-        ImageView flagClose=(ImageView) dialog
+        ImageView flagClose = (ImageView) dialog
                 .findViewById(R.id.flagClose);
         flagClose.setOnClickListener(new View.OnClickListener() {
 
@@ -408,9 +415,6 @@ public class CommentActivity extends BaseActivity {
     }
 
 
-
-
-
     View.OnClickListener moreListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -441,7 +445,7 @@ public class CommentActivity extends BaseActivity {
 
         public void onSuccess(JSONObject responce) {
             Log.d("action ClientCall", "success" + responce);
-                dismissProgressDialog();
+            dismissProgressDialog();
             if (!responce.isNull("data")) {
                 dismissProgressDialog();
                 showAlert("Comment Deleted Successfully", "OK", null);
@@ -485,18 +489,18 @@ public class CommentActivity extends BaseActivity {
         @Override
         public void onFailure(Throwable error, String content) {
             super.onFailure(error, content);
-           dismissProgressDialog();
-            if(error!=null)
+            dismissProgressDialog();
+            if (error != null)
                 showToast(error.toString());
-                else
-            showToast("Something went wrong.");
+            else
+                showToast("Something went wrong.");
 
         }
 
     }
 
     private void populateData() {
-        ContentBean comment = ContentParser.ContentCollection.get(contentId);
+         comment = ContentParser.ContentCollection.get(contentId);
         //Author Name
         authorNameTv.setText(comment.getAuthor().getDisplayName());
         //Posted Date
@@ -512,24 +516,24 @@ public class CommentActivity extends BaseActivity {
         if (comment.getOembedUrl() != null) {
             if (comment.getOembedUrl().length() > 0) {
                 imageAttachedToCommentIv.setVisibility(View.VISIBLE);
-                application.printLog(true,"comment.getOembedUrl()",comment.getOembedUrl()+" URL");
+                application.printLog(true, "comment.getOembedUrl()", comment.getOembedUrl() + " URL");
                 Picasso.with(getApplication()).load(comment.getOembedUrl()).fit().into(imageAttachedToCommentIv);
             } else {
                 imageAttachedToCommentIv.setVisibility(View.GONE);
             }
         } else {
-           imageAttachedToCommentIv.setVisibility(View.GONE);
+            imageAttachedToCommentIv.setVisibility(View.GONE);
         }
 
 
         if (comment.getVote() != null) {// know helpful value and set color
 
             if (comment.getVote().size() > 0) {
-               int  helpfulFlag = 0;
+                int helpfulFlag = 0;
 
                 helpfulFlag = knowHelpfulValue(
                         application
-                                .getDataFromSharedPrefs(LFSAppConstants.ID,""),
+                                .getDataFromSharedPrefs(LFSAppConstants.ID, ""),
                         comment.getVote());
 
                 if (helpfulFlag == 1) {
@@ -549,7 +553,7 @@ public class CommentActivity extends BaseActivity {
                             .parseColor("#757575"));
                 }
 
-                likeCountTv.setText(comment.getVote().size()+"");
+                likeCountTv.setText(comment.getVote().size() + "");
 
             } else {
                 likeIv
@@ -592,7 +596,7 @@ public class CommentActivity extends BaseActivity {
         likeIv = (ImageView) findViewById(R.id.likeIv);
         imageAttachedToCommentIv = (ImageView) findViewById(R.id.imageAttachedToCommentIv);
         moreIv = (ImageView) findViewById(R.id.moreIv);
-        LinearLayout activityIconLL= (LinearLayout) findViewById(R.id.activityIconLL);
+        LinearLayout activityIconLL = (LinearLayout) findViewById(R.id.activityIconLL);
         activityIconLL.setOnClickListener(homeIconListener);
     }
 
