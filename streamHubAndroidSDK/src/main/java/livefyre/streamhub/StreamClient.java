@@ -1,17 +1,17 @@
 package livefyre.streamhub;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.net.Uri;
 import android.net.Uri.Builder;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 
 public class StreamClient {
 	public static String generateStreamUrl(String networkId,
@@ -52,16 +52,16 @@ public class StreamClient {
 				collectionId, eventId);
 		HttpClient.client.get(streamEndpoint, new AsyncHttpResponseHandler() {
 			@Override
-			public void onSuccess(String responce) {
-				handler.onSuccess(responce);
+			public void onSuccess(String response) {
+				handler.onSuccess(response);
 				try {
 
-					if (responce != null) {
-						Log.d("Stream Clint Call", "Success" + responce);
-						JSONObject responceJson = new JSONObject(responce);
+					if (response != null) {
+						Log.d("Stream Clint Call", "Success" + response);
+						JSONObject responseJson = new JSONObject(response);
 						String lastEvent;
-						if (responceJson.has("data")) {
-							lastEvent = responceJson.getJSONObject("data")
+						if (responseJson.has("data")) {
+							lastEvent = responseJson.getJSONObject("data")
 									.getString("maxEventId");
 
 							pollStreamEndpoint(networkId, collectionId,

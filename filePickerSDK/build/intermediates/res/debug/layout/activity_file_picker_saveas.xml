@@ -4,39 +4,14 @@
     android:layout_height="match_parent"
     android:background="#ffffff">
 
-    <LinearLayout
-        android:id="@+id/topBar"
-        android:orientation="horizontal"
-        android:background="#ffffff"
-        android:layout_width="match_parent"
-        android:layout_height="56dp">
-
-        <ImageView
-            android:src="@drawable/ic_launcher"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:gravity="center_vertical"
-            android:layout_gravity="center_vertical"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:layout_marginLeft="32dp"
-            android:text="Add Photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
 
     <ListView
-        android:layout_below="@+id/topBar"
         android:background="#ffffff"
         android:id="@+id/listView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/linearLayout1"
-        android:layout_alignParentLeft="true"
-        >
+        android:layout_alignParentLeft="true">
 
     </ListView>
 
