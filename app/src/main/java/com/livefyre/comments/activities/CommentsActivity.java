@@ -27,6 +27,7 @@ import com.livefyre.comments.models.ContentTypeEnum;
 import com.livefyre.comments.parsers.ContentParser;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.squareup.otto.Bus;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,8 +57,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
     ImageButton postNewCommentIv;
     ArrayList<ContentBean> commentsArray;
     ContentParser content;
-
-
+    Bus mBus=application.getBus();
     private String adminClintId = "No";
 
     @Override
@@ -115,7 +115,6 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         commentsLV = (RecyclerView) findViewById(R.id.commentsLV);
         commentsLV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         postNewCommentIv = (ImageButton) findViewById(R.id.postNewCommentIv);
-
     }
 
     void adminClintCall() {
@@ -137,7 +136,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
     }
 
     @Override
-     public void onDataUpdate(HashSet<String> authorsSet,HashSet<String> statesSet, HashSet<String> annotationsSet){
+     public void onDataUpdate(HashSet<String> authorsSet,HashSet<String> statesSet, HashSet<String> annotationsSet,HashSet<String> updates){
         application.printLog(true,TAG,""+statesSet);
         for(String stateBeanId:statesSet){
             ContentBean stateBean=ContentParser.ContentCollection.get(stateBeanId);
@@ -156,6 +155,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
                 }
             }
         }
+        mBus.post(updates);
         mCommentsAdapter.notifyDataSetChanged();
 
     }

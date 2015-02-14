@@ -24,11 +24,14 @@ import com.livefyre.comments.models.Vote;
 import com.livefyre.comments.parsers.ContentParser;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
+import java.util.HashSet;
 import java.util.List;
 
 import livefyre.streamhub.LFSActions;
@@ -46,11 +49,12 @@ public class CommentActivity extends BaseActivity {
 
     private String contentId;
     ContentBean comment;
+    Bus mBus=application.getBus();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comment_activity);
-
+        mBus.register(this);
         getDataFromIntent();
 
         pullViews();
@@ -62,6 +66,11 @@ public class CommentActivity extends BaseActivity {
         buildToolBar();
     }
 
+    @Subscribe public void getUpdates(HashSet<String> updatesSet){
+
+       application.printLog(true,TAG,updatesSet+"");
+        populateData();
+    }
 
     View.OnClickListener likeListener = new View.OnClickListener() {
         @Override

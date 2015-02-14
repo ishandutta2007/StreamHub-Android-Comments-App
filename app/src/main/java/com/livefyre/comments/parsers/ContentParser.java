@@ -453,7 +453,7 @@ public class ContentParser {
 
 
         updateChilds(updateSet);
-        l1.onDataUpdate(authorsSet,statesSet,annotationsSet);
+        l1.onDataUpdate(authorsSet,statesSet,annotationsSet,updateSet);
 
     }
 

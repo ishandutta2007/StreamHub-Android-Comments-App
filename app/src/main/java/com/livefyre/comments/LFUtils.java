@@ -65,16 +65,15 @@ public class LFUtils {
 				return "Posted Just Now";
 			} else if (diffMinutes < 1) {
 				if (diffSeconds == 1)
-					return diffSeconds+" Second ago";
+					return diffSeconds+" second ago";
 				else
-					return diffSeconds+" Seconds ago";
-				
+					return diffSeconds+" seconds ago";
 				
 			} else if (diffHours < 1) {
 				if (diffMinutes == 1)
-					return diffMinutes+" Month ago";
+					return diffMinutes+" minute ago";
 				else
-					return diffMinutes+" Months ago";
+					return diffMinutes+" minutes ago";
 			} else if (diffDays < 1) {
 				if (diffHours == 1)
 					return diffHours+" hour ago";

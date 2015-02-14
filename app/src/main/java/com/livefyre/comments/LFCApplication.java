@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.livefyre.comments.activities.SplashActivity;
 import com.livefyre.comments.models.ContentBean;
+import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,7 @@ public class LFCApplication extends Application {
     private SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     private ArrayList<ContentBean> contentCollection;
+    Bus mBus;
 
     @Override
     public void onCreate() {
@@ -33,6 +35,7 @@ public class LFCApplication extends Application {
         sharedPreferences = getApplicationContext().getSharedPreferences(
                 LFSAppConstants.SHARED_PREFERENCES, MODE_PRIVATE);
         contentCollection = new ArrayList<>();
+        mBus=new Bus();
     }
 
     public void putDataInSharedPref(String key, String value) {
@@ -76,5 +79,8 @@ public class LFCApplication extends Application {
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.splash));
         addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         getApplicationContext().sendBroadcast(addIntent);
+    }
+    public  Bus getBus(){
+        return mBus;
     }
 }
