@@ -368,7 +368,11 @@ public class ContentParser {
     public void setStreamData(String data) {
 
         JSONObject jsonObject;
-        HashSet<String> updateSet = new HashSet();
+        HashSet<String> annotationsSet = new HashSet<>();
+        HashSet<String> authorsSet = new HashSet<>();
+        HashSet<String> statesSet = new HashSet<>();
+        HashSet<String> updateSet = new HashSet<>();
+
         try {
 
             jsonObject = new JSONObject(data).getJSONObject("data");
@@ -384,6 +388,7 @@ public class ContentParser {
                         String key = (String) keys.next();
                         try {
                             statesMap.put(key, states.getJSONObject(key));
+                            authorsSet.add(key);
                             updateSet.add(key);
                         } catch (JSONException e) {
 
@@ -405,13 +410,15 @@ public class ContentParser {
                         String key = (String) keys.next();
                         try {
                             statesMap.put(key, states.getJSONObject(key));
+                            statesSet.add(key);
                             updateSet.add(key);
+
                         } catch (JSONException e) {
 
                             e.printStackTrace();
                         }
                     }
-                    handleStatesDataNew(statesMap);
+                    handleStatesData(statesMap);
                 }
             }
 
@@ -428,7 +435,9 @@ public class ContentParser {
                         try {
                             annotationsMap.put(key,
                                     annotations.getJSONObject(key));
+                            annotationsSet.add(key);
                             updateSet.add(key);
+
                         } catch (JSONException e) {
 
                             e.printStackTrace();
@@ -440,13 +449,15 @@ public class ContentParser {
         } catch (JSONException e1) {
             e1.printStackTrace();
         }
+
+
+
         updateChilds(updateSet);
-        l1.onDataUpdate(updateSet);
+        l1.onDataUpdate(authorsSet,statesSet,annotationsSet);
 
     }
 
     private void updateChilds(HashSet<String> updateSet) {
-        // TODO Auto-generated method stub
         for (String beanId : updateSet) {
             countFlag = 0;
             ContentBean childId = ContentCollection.get(beanId);
@@ -615,7 +626,7 @@ public class ContentParser {
 
     }
 
-    private void handleStatesDataNew(Map<String, JSONObject> map) {
+    private void handleStatesData(Map<String, JSONObject> map) {
         for (JSONObject mainContent : map.values()) {
             try {
                 JSONObject content = mainContent.getJSONObject("content");

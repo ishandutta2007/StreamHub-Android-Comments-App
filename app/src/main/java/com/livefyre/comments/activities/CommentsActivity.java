@@ -25,11 +25,13 @@ import com.livefyre.comments.listeners.ContentUpdateListener;
 import com.livefyre.comments.models.ContentBean;
 import com.livefyre.comments.models.ContentTypeEnum;
 import com.livefyre.comments.parsers.ContentParser;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +41,7 @@ import java.util.HashSet;
 
 import livefyre.streamhub.AdminClient;
 import livefyre.streamhub.BootstrapClient;
+import livefyre.streamhub.StreamClient;
 
 public class CommentsActivity extends BaseActivity implements ContentUpdateListener {
     public static final String TAG = CommentsActivity.class.getSimpleName();
@@ -51,7 +54,9 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
     RecyclerView commentsLV;
     CommentsAdapter mCommentsAdapter;
     ImageButton postNewCommentIv;
-    ArrayList<ContentBean> reviewCollectionBuild;
+    ArrayList<ContentBean> commentsArray;
+    ContentParser content;
+
 
     private String adminClintId = "No";
 
@@ -75,7 +80,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
             @Override
             public void onClick(View view, int position) {
                 Intent detailViewIntent = new Intent(CommentsActivity.this, CommentActivity.class);
-                detailViewIntent.putExtra(LFSAppConstants.ID, reviewCollectionBuild.get(position).getId());
+                detailViewIntent.putExtra(LFSAppConstants.ID, commentsArray.get(position).getId());
                 startActivity(detailViewIntent);
             }
 
@@ -132,7 +137,26 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
     }
 
     @Override
-    public void onDataUpdate(HashSet<String> updates) {
+     public void onDataUpdate(HashSet<String> authorsSet,HashSet<String> statesSet, HashSet<String> annotationsSet){
+        application.printLog(true,TAG,""+statesSet);
+        for(String stateBeanId:statesSet){
+            ContentBean stateBean=ContentParser.ContentCollection.get(stateBeanId);
+            if(stateBean.getVisibility().equals("1")) {
+                int flag=0;
+                for (int i = 0; i < commentsArray.size(); i++) {
+                    ContentBean contentBean = commentsArray.get(i);
+                    if (contentBean.getId().equals(stateBean.getParentId())) {
+                        commentsArray.add(i + 1, stateBean);
+                        flag=1;
+                        break;
+                    }
+                }
+                if(flag==0){
+                    commentsArray.add(0, stateBean);
+                }
+            }
+        }
+        mCommentsAdapter.notifyDataSetChanged();
 
     }
 
@@ -214,10 +238,10 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
     }
 
     void buildCommentList(String data) {
-        ContentParser content = null;
         try {
             content = new ContentParser(new JSONObject(data));
             content.getContentFromResponse(this);
+            streamClintCall();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -225,18 +249,43 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         commentsLV.setAdapter(mCommentsAdapter);
         dismissProgressDialog();
     }
+    void streamClintCall() {
+        try {
+            StreamClient.pollStreamEndpoint(LFSConfig.NETWORK_ID,
+                    LFSConfig.COLLECTION_ID, ContentParser.lastEvent,
+                    new StreamCallBack());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public class StreamCallBack extends AsyncHttpResponseHandler {
 
+        public void onSuccess(String data) {
+            if (data != null) {
+                content.setStreamData(data);
+            }
+
+        }
+
+        @Override
+        public void onFailure(Throwable error, String content) {
+            super.onFailure(error, content);
+        }
+
+    }
     ArrayList<ContentBean> getMainComments() {
-        reviewCollectionBuild = new ArrayList<ContentBean>();
+        commentsArray = new ArrayList<ContentBean>();
 
         for (ContentBean parentBean : getSortedMainComments()) {
-            reviewCollectionBuild.add(parentBean);
+            commentsArray.add(parentBean);
 
             for (ContentBean b : ContentParser.getChildContentForReview(parentBean.getId())) {
-                reviewCollectionBuild.add(b);
+                commentsArray.add(b);
             }
         }
-        return reviewCollectionBuild;
+        return commentsArray;
 
     }
 
