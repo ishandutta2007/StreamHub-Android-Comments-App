@@ -57,8 +57,11 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
     ImageButton postNewCommentIv;
     ArrayList<ContentBean> commentsArray;
     ContentParser content;
-    Bus mBus=application.getBus();
+    Bus mBus = application.getBus();
     private String adminClintId = "No";
+    private static final int DELETED = -1;
+    private static final int PARENT = 0;
+    private static final int CHILD = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +82,17 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         commentsLV.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), commentsLV, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Intent detailViewIntent = new Intent(CommentsActivity.this, CommentActivity.class);
-                detailViewIntent.putExtra(LFSAppConstants.ID, commentsArray.get(position).getId());
-                startActivity(detailViewIntent);
+                int viewType = commentsArray.get(position).getContentType().getValue();
+                switch (viewType) {
+                    case PARENT:
+                    case CHILD:
+                        Intent detailViewIntent = new Intent(CommentsActivity.this, CommentActivity.class);
+                        detailViewIntent.putExtra(LFSAppConstants.ID, commentsArray.get(position).getId());
+                        startActivity(detailViewIntent);
+                        break;
+                    case DELETED:
+                        break;
+                }
             }
 
             @Override
@@ -136,21 +147,21 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
     }
 
     @Override
-     public void onDataUpdate(HashSet<String> authorsSet,HashSet<String> statesSet, HashSet<String> annotationsSet,HashSet<String> updates){
-        application.printLog(true,TAG,""+statesSet);
-        for(String stateBeanId:statesSet){
-            ContentBean stateBean=ContentParser.ContentCollection.get(stateBeanId);
-            if(stateBean.getVisibility().equals("1")) {
-                int flag=0;
+    public void onDataUpdate(HashSet<String> authorsSet, HashSet<String> statesSet, HashSet<String> annotationsSet, HashSet<String> updates) {
+        application.printLog(true, TAG, "" + statesSet);
+        for (String stateBeanId : statesSet) {
+            ContentBean stateBean = ContentParser.ContentCollection.get(stateBeanId);
+            if (stateBean.getVisibility().equals("1")) {
+                int flag = 0;
                 for (int i = 0; i < commentsArray.size(); i++) {
                     ContentBean contentBean = commentsArray.get(i);
                     if (contentBean.getId().equals(stateBean.getParentId())) {
                         commentsArray.add(i + 1, stateBean);
-                        flag=1;
+                        flag = 1;
                         break;
                     }
                 }
-                if(flag==0){
+                if (flag == 0) {
                     commentsArray.add(0, stateBean);
                 }
             }
@@ -245,10 +256,12 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mCommentsAdapter = new CommentsAdapter(this, getMainComments());
+        commentsArray = getMainComments();
+        mCommentsAdapter = new CommentsAdapter(this,commentsArray);
         commentsLV.setAdapter(mCommentsAdapter);
         dismissProgressDialog();
     }
+
     void streamClintCall() {
         try {
             StreamClient.pollStreamEndpoint(LFSConfig.NETWORK_ID,
@@ -260,6 +273,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
             e.printStackTrace();
         }
     }
+
     public class StreamCallBack extends AsyncHttpResponseHandler {
 
         public void onSuccess(String data) {
@@ -275,6 +289,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         }
 
     }
+
     ArrayList<ContentBean> getMainComments() {
         commentsArray = new ArrayList<ContentBean>();
 
@@ -402,10 +417,9 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         @Override
         public void onClick(View v) {
 
-            if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH ){
-                activityTitle.setSystemUiVisibility( View.SYSTEM_UI_FLAG_HIDE_NAVIGATION );
-            }
-            else if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                activityTitle.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 activityTitle.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
             }
 

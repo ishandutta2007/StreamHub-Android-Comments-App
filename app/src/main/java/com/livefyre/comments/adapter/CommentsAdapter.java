@@ -31,6 +31,11 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
     Context mContext;
     private List<ContentBean> contentArray = null;
 
+    private static final int VIEW_COUNT = 3;
+    private static final int DELETED = -1;
+    private static final int PARENT = 0;
+    private static final int CHILD = 1;
+
     public CommentsAdapter(Context context, List<ContentBean> contentArray) {
         this.mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
@@ -38,100 +43,127 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return contentArray.get(position).getContentType().getValue();
+    }
+
+
+    @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mLayoutInflater.inflate(R.layout.comments_list_item, parent, false);
-        MyViewHolder holder = new MyViewHolder(view);
+        MyViewHolder holder = null;
+        View view = null;
+        switch (viewType) {
+            case PARENT:
+            case CHILD:
+                view = mLayoutInflater.inflate(R.layout.comments_list_item, parent, false);
+                holder = new MyViewHolder(view);
+
+                break;
+            case DELETED:
+                view = mLayoutInflater.inflate(R.layout.deleted_item, parent, false);
+                holder = new MyViewHolder(view);
+                break;
+        }
         return holder;
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+
         final ContentBean comment = contentArray.get(position);
 
+        int viewType = comment.getContentType().getValue();
+
+        switch (viewType) {
+            case PARENT:
+            case CHILD:
+
+                try {
+
+                    float density = mContext.getResources().getDisplayMetrics().density;
+
+                    int px = (int) (40 * density);
+
+                    switch (comment.getDepth()) {
+                        case 0:
+                            holder.commentsListItemLL.setPadding(16, 0, 16, 16);
+                            break;
+                        case 1:
+                            holder.commentsListItemLL.setPadding(px * 1, 0, 16, 16);
+                            break;
+                        case 2:
+                            holder.commentsListItemLL.setPadding(px * 2, 0, 16, 16);
+                            break;
+                        case 3:
+                            holder.commentsListItemLL.setPadding(px * 3, 0, 16, 16);
+                            break;
+                        default:
+                            holder.commentsListItemLL.setPadding(px * 3, 0, 16, 16);
+                            break;
+
+                    }
+
+                    holder.bottomLine.setVisibility(View.VISIBLE);
+
+                    //Author Name
+                    holder.authorNameTv.setText(comment.getAuthor().getDisplayName());
+                    //Posted Date
+                    holder.postedDateOrTime.setText(LFUtils.getFormatedDate(
+                            comment.getCreatedAt(), LFSAppConstants.SHART));
+                    //Comment Body
+                    holder.commentBody.setText(LFUtils.trimTrailingWhitespace(Html
+                                    .fromHtml(comment.getBodyHtml())),
+                            TextView.BufferType.SPANNABLE);
+                    //Moderator
+                    if (comment.getIsModerator().equals("true")) {
+                        holder.moderatorTv.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.moderatorTv.setVisibility(View.GONE);
+                    }
+                    //Featured
+                    if (comment.getIsFeatured()) {
+                        holder.moderatorTv.setVisibility(View.GONE);
+                        holder.featureLL.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.featureLL.setVisibility(View.GONE);
+                    }
+
+                    //Liked
+                    if (comment.getVote() != null) {
+                        if (comment.getVote().size() > 0) {
+                            application.printLog(true, "vote", contentArray.get(position).getVote().size() + "A");
+                            holder.likesTv.setVisibility(View.VISIBLE);
+                            holder.likesTv.setText(likedCount(comment.getVote()));
+                        } else
+                            holder.likesTv.setVisibility(View.GONE);
+                    } else
+                        holder.likesTv.setVisibility(View.GONE);
 
 
-        try {
-
-            float density = mContext.getResources().getDisplayMetrics().density;
-
-            int px = (int) (40 * density);
-
-            switch (comment.getDepth()) {
-                case 0:
-                    holder.commentsListItemLL.setPadding(16, 0, 16, 16);
-                    break;
-                case 1:
-                    holder.commentsListItemLL.setPadding(px * 1, 0, 16, 16);
-                    break;
-                case 2:
-                    holder.commentsListItemLL.setPadding(px * 2, 0, 16, 16);
-                    break;
-                case 3:
-                    holder.commentsListItemLL.setPadding(px * 3, 0, 16, 16);
-                    break;
-                default:
-                    holder.commentsListItemLL.setPadding(px * 3, 0, 16, 16);
-                    break;
-
-            }
-
-            holder.bottomLine.setVisibility(View.VISIBLE);
-
-            //Author Name
-            holder.authorNameTv.setText(comment.getAuthor().getDisplayName());
-            //Posted Date
-            holder.postedDateOrTime.setText(LFUtils.getFormatedDate(
-                    comment.getCreatedAt(), LFSAppConstants.SHART));
-            //Comment Body
-            holder.commentBody.setText(LFUtils.trimTrailingWhitespace(Html
-                            .fromHtml(comment.getBodyHtml())),
-                    TextView.BufferType.SPANNABLE);
-            //Moderator
-            if (comment.getIsModerator().equals("true")) {
-                holder.moderatorTv.setVisibility(View.VISIBLE);
-            } else {
-                holder.moderatorTv.setVisibility(View.GONE);
-            }
-            //Featured
-            if (comment.getIsFeatured()) {
-                holder.moderatorTv.setVisibility(View.GONE);
-                holder.featureLL.setVisibility(View.VISIBLE);
-            } else {
-                holder.featureLL.setVisibility(View.GONE);
-            }
-
-            //Liked
-            if (comment.getVote() != null) {
-                if (comment.getVote().size() > 0) {
-                    application.printLog(true, "vote", contentArray.get(position).getVote().size() + "A");
-                    holder.likesTv.setVisibility(View.VISIBLE);
-                    holder.likesTv.setText(likedCount(comment.getVote()));
-                } else
-                    holder.likesTv.setVisibility(View.GONE);
-            } else
-                holder.likesTv.setVisibility(View.GONE);
+                    if (comment.getAuthor().getAvatar().length() > 0) {
+                        Picasso.with(mContext).load(comment.getAuthor().getAvatar()).fit().transform(new RoundedTransformation(90, 0)).into(holder.avatarIv);
+                    } else {
+                    }
 
 
-            if (comment.getAuthor().getAvatar().length() > 0) {
-                Picasso.with(mContext).load(comment.getAuthor().getAvatar()).fit().transform(new RoundedTransformation(90, 0)).into(holder.avatarIv);
-            } else {
-            }
+                    if (comment.getOembedUrl() != null) {
+                        if (comment.getOembedUrl().length() > 0) {
+                            holder.imageAttachedToCommentIv.setVisibility(View.VISIBLE);
+                            application.printLog(true, "comment.getOembedUrl()", comment.getOembedUrl() + " URL");
+                            Picasso.with(mContext).load(comment.getOembedUrl()).fit().into(holder.imageAttachedToCommentIv);
+                        } else {
+                            holder.imageAttachedToCommentIv.setVisibility(View.GONE);
+                        }
+                    } else {
+                        holder.imageAttachedToCommentIv.setVisibility(View.GONE);
+                    }
 
-
-            if (comment.getOembedUrl() != null) {
-                if (comment.getOembedUrl().length() > 0) {
-                    holder.imageAttachedToCommentIv.setVisibility(View.VISIBLE);
-                    application.printLog(true,"comment.getOembedUrl()",comment.getOembedUrl()+" URL");
-                    Picasso.with(mContext).load(comment.getOembedUrl()).fit().into(holder.imageAttachedToCommentIv);
-                } else {
-                    holder.imageAttachedToCommentIv.setVisibility(View.GONE);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } else {
-                holder.imageAttachedToCommentIv.setVisibility(View.GONE);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+                break;
+            case DELETED:
+                break;
         }
     }
 
