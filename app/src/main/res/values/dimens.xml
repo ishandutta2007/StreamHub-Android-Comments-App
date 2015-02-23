@@ -10,5 +10,7 @@
     <!-- Main View - Deleted Cell  -->
     <dimen name="deletedReviewerImageHeight">20dp</dimen>
     <dimen name="deletedReviewerFeaturedImageWidth">20dp</dimen>
+    <dimen name="activity_image_height">200dp</dimen>
+
 
 </resources>

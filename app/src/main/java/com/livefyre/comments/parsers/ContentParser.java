@@ -118,9 +118,14 @@ public class ContentParser {
         childs = new ArrayList();
         depth = 0;
         if (ContentCollection.get(contentId) != null) {
+
+
             if (ContentCollection.get(contentId).getChildBeanContent() != null)
                 getChildsForReview(ContentCollection.get(contentId)
                         .getChildBeanContent());
+
+
+
         } else {
             Log.d("Child", "No child");
         }
@@ -129,6 +134,13 @@ public class ContentParser {
 
     }
 
+
+    private Boolean hasVisibleChilds(List<ContentBean> mContentBeans){
+        for(ContentBean b:mContentBeans){
+            if(b.getVisibility().equals("1"))return true;
+        }
+        return false;
+    }
     private static void getChildsForReview(List<String> ja) {
 
         Collections.sort(ja, new Comparator<String>() {
@@ -155,7 +167,7 @@ public class ContentParser {
 
                 }
             }
-//            else
+            else
                 childs.add(bean);
 
             if (bean.getChildBeanContent() != null) {

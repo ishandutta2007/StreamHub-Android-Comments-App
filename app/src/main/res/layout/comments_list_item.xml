@@ -137,7 +137,7 @@
         android:scaleType="centerCrop"
         android:id="@+id/imageAttachedToCommentIv"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="@dimen/activity_image_height"
         android:layout_marginBottom="8dp"
         android:src="@drawable/ic_launcher"
         android:visibility="gone" />

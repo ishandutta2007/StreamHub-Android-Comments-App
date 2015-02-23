@@ -131,7 +131,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
                     //Liked
                     if (comment.getVote() != null) {
                         if (comment.getVote().size() > 0) {
-                            application.printLog(true, "vote", contentArray.get(position).getVote().size() + "A");
+                            application.printLog(false, "vote", contentArray.get(position).getVote().size() + "A");
                             holder.likesTv.setVisibility(View.VISIBLE);
                             holder.likesTv.setText(likedCount(comment.getVote()));
                         } else
@@ -163,7 +163,29 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
                 }
                 break;
             case DELETED:
-                break;
+                float density = mContext.getResources().getDisplayMetrics().density;
+
+                int px = (int) (40 * density);
+
+                switch (comment.getDepth()) {
+                    case 0:
+                        holder.deleted_item.setPadding(16, 0, 16, 16);
+                        break;
+                    case 1:
+                        holder.deleted_item.setPadding(px * 1, 0, 16, 16);
+                        break;
+                    case 2:
+                        holder.deleted_item.setPadding(px * 2, 0, 16, 16);
+                        break;
+                    case 3:
+                        holder.deleted_item.setPadding(px * 3, 0, 16, 16);
+                        break;
+                    default:
+                        holder.deleted_item.setPadding(px * 3, 0, 16, 16);
+                        break;
+
+                }
+               break;
         }
     }
 
@@ -178,7 +200,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
 
         TextView authorNameTv, postedDateOrTime, commentBody, moderatorTv, likesTv;
 
-        LinearLayout featureLL, commentsListItemLL;
+        LinearLayout featureLL, commentsListItemLL,deleted_item;
 
         ImageView avatarIv, imageAttachedToCommentIv;
 
@@ -188,7 +210,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.MyView
             bottomLine = item.findViewById(R.id.bottomLine);
 
             commentsListItemLL = (LinearLayout) item.findViewById(R.id.commentsListItemLL);
-
+            deleted_item=(LinearLayout) item.findViewById(R.id.deletedCell);
             authorNameTv = (TextView) item.findViewById(R.id.authorNameTv);
             postedDateOrTime = (TextView) item.findViewById(R.id.postedDateOrTime);
             commentBody = (TextView) item.findViewById(R.id.commentBody);

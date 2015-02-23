@@ -14,8 +14,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.livefyre.comments.BaseActivity;
 import com.livefyre.comments.LFSAppConstants;
 import com.livefyre.comments.LFSConfig;
@@ -39,6 +42,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import livefyre.streamhub.AdminClient;
 import livefyre.streamhub.BootstrapClient;
@@ -50,18 +54,20 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
     Toolbar toolbar;
 
-    TextView activityTitle;
+    TextView activityTitle,notifMsgTV;
 
     RecyclerView commentsLV;
     CommentsAdapter mCommentsAdapter;
     ImageButton postNewCommentIv;
     ArrayList<ContentBean> commentsArray;
     ContentParser content;
+    LinearLayout notification;
     Bus mBus = application.getBus();
     private String adminClintId = "No";
     private static final int DELETED = -1;
     private static final int PARENT = 0;
     private static final int CHILD = 1;
+    ArrayList<String> newComments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +107,22 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
             }
         }));
         commentsLV.setOnScrollListener(onScrollListener);
+        notification.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                YoYo.with(Techniques.BounceInUp)
+                                                        .duration(700)
+                                                        .playOn(findViewById(R.id.notification));
+                                                notification.setVisibility(View.GONE);
+                                                newComments.clear();
+                                                mCommentsAdapter=null;
+                                                commentsArray = getMainComments();
+                                                mCommentsAdapter = new CommentsAdapter(getApplication(), commentsArray);
+                                                commentsLV.setAdapter(mCommentsAdapter);
+                                            }
+                                        }
+
+        );
     }
 
     private void buildToolBar() {
@@ -126,6 +148,8 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         commentsLV = (RecyclerView) findViewById(R.id.commentsLV);
         commentsLV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         postNewCommentIv = (ImageButton) findViewById(R.id.postNewCommentIv);
+        notifMsgTV = (TextView) findViewById(R.id.notifMsgTV);
+        notification = (LinearLayout) findViewById(R.id.notification);
     }
 
     void adminClintCall() {
@@ -146,30 +170,80 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
     }
 
-    @Override
+        @Override
     public void onDataUpdate(HashSet<String> authorsSet, HashSet<String> statesSet, HashSet<String> annotationsSet, HashSet<String> updates) {
         application.printLog(true, TAG, "" + statesSet);
         for (String stateBeanId : statesSet) {
             ContentBean stateBean = ContentParser.ContentCollection.get(stateBeanId);
             if (stateBean.getVisibility().equals("1")) {
-                int flag = 0;
-                for (int i = 0; i < commentsArray.size(); i++) {
-                    ContentBean contentBean = commentsArray.get(i);
-                    if (contentBean.getId().equals(stateBean.getParentId())) {
-                        commentsArray.add(i + 1, stateBean);
-                        flag = 1;
-                        break;
+
+                if (isExistComment(stateBeanId)) continue;
+
+                if (adminClintId.equals(stateBean.getAuthorId())) {
+                    int flag = 0;
+                    for (int i = 0; i < commentsArray.size(); i++) {
+                        ContentBean contentBean = commentsArray.get(i);
+                        if (contentBean.getId().equals(stateBean.getParentId())) {
+                            commentsArray.add(i + 1, stateBean);
+//                            mCommentsAdapter.notifyItemInserted(i + 1);
+                            flag = 1;
+                            break;
+                        }
                     }
+                    if (flag == 0) {
+                        commentsArray.add(0, stateBean);
+                        mCommentsAdapter.notifyItemInserted(0);
+                    }
+                } else {
+                    newComments.add(0, stateBeanId);
                 }
-                if (flag == 0) {
-                    commentsArray.add(0, stateBean);
+            } else {
+                List<ContentBean> mContentBeans=ContentParser.getChildContentForReview(stateBeanId);
+                if (!hasVisibleChilds(mContentBeans)) {
+                    application.printLog(true, TAG, "Deleted Content");
+
+                    for (int i = 0; i < commentsArray.size(); i++) {
+                        ContentBean bean = commentsArray.get(i);
+                        if (bean.getId().equals(stateBeanId)) {
+                            commentsArray.remove(i);
+                            mCommentsAdapter.notifyItemRemoved(i);
+                            break;
+
+                        }
+                    }
                 }
             }
         }
-        mBus.post(updates);
+        if (updates.size() > 0)
+            mBus.post(updates);
         mCommentsAdapter.notifyDataSetChanged();
 
+
+        if (newComments.size() > 0) {
+
+            if (newComments.size() == 1) {
+                notifMsgTV.setText(newComments.size() + " New Comment");
+
+            } else {
+                notifMsgTV.setText(newComments.size() + " New Comments");
+            }
+            notification.setVisibility(View.VISIBLE);
+            YoYo.with(Techniques.DropOut)
+                    .duration(700)
+                    .playOn(findViewById(R.id.notification));
+
+        } else {
+            notification.setVisibility(View.GONE);
+        }
+
+
     }
+
+    Boolean isExistComment(String commentId) {
+        if (commentsArray.contains(ContentParser.ContentCollection.get(commentId))) return true;
+        return false;
+    }
+
 
     public class AdminCallback extends JsonHttpResponseHandler {
 
@@ -259,6 +333,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         commentsArray = getMainComments();
         mCommentsAdapter = new CommentsAdapter(this,commentsArray);
         commentsLV.setAdapter(mCommentsAdapter);
+        newComments=new ArrayList<>();
         dismissProgressDialog();
     }
 
@@ -294,9 +369,21 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         commentsArray = new ArrayList<ContentBean>();
 
         for (ContentBean parentBean : getSortedMainComments()) {
-            commentsArray.add(parentBean);
+            List<ContentBean> mContentBeans=ContentParser.getChildContentForReview(parentBean.getId());
+            if(!hasVisibleChilds(mContentBeans))continue;
 
-            for (ContentBean b : ContentParser.getChildContentForReview(parentBean.getId())) {
+            commentsArray.add(parentBean);
+            for (ContentBean b : mContentBeans) {
+
+                if(!b.getVisibility().equals("1")){
+                    List<ContentBean> contentBeans=ContentParser.getChildContentForReview(b.getId());
+                    if(!hasVisibleChilds(contentBeans))
+                        continue;
+                }
+
+
+//                List<ContentBean> childChildsList=ContentParser.getChildContentForReview(b.getId());
+//                if(!hasVisibleChilds(childChildsList))continue;
                 commentsArray.add(b);
             }
         }
@@ -304,14 +391,22 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
     }
 
+
     ArrayList<ContentBean> getSortedMainComments() {
         ArrayList<ContentBean> sortedList = new ArrayList<ContentBean>();
         HashMap<String, ContentBean> mainContent = ContentParser.ContentCollection;
         if (mainContent != null)
             for (ContentBean t : mainContent.values()) {
                 if (t.getContentType() == ContentTypeEnum.PARENT
-                        && t.getVisibility().equals("1")) {
+                        ) {
+
+                    if(!t.getVisibility().equals("1")){
+                        List<ContentBean> mContentBeans=ContentParser.getChildContentForReview(t.getId());
+                        if(!hasVisibleChilds(mContentBeans))
+                            continue;
+                    }
                     sortedList.add(t);
+
                 }
             }
         Collections.sort(sortedList, new Comparator<ContentBean>() {
@@ -323,7 +418,12 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         });
         return sortedList;
     }
-
+    private Boolean hasVisibleChilds(List<ContentBean> mContentBeans){
+        for(ContentBean b:mContentBeans){
+            if(b.getVisibility().equals("1"))return true;
+        }
+        return false;
+    }
     DialogInterface.OnClickListener tryAgain = new DialogInterface.OnClickListener() {
 
         @Override
