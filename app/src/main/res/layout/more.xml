@@ -13,12 +13,12 @@
         android:orientation="vertical"></LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:id="@+id/mainDialog"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#ffffff">
+        android:background="#ffffff"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -30,11 +30,11 @@
             android:paddingTop="8dp">
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -55,11 +55,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/feature"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -80,20 +80,20 @@
             </LinearLayout>
 
             <View
-                android:visibility="gone"
                 android:id="@+id/moreLine"
                 android:layout_width="fill_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="7dp"
                 android:layout_marginBottom="8dp"
-                android:background="#d6d6d6" />
+                android:layout_marginTop="7dp"
+                android:background="#d6d6d6"
+                android:visibility="gone" />
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/flag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -113,11 +113,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/bozo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -137,11 +137,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/banUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="24dp"
@@ -161,11 +161,11 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/delete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="24dp"

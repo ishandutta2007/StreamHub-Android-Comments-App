@@ -11,4 +11,5 @@
     <color name="colorFeature">#feb33b</color>
     <color name="magenta">#e85b3f</color>
     <color name="colorTransBlack">#80000000</color>
+    <color name="ripplecolor">#C6DABF</color>
 </resources>

@@ -54,7 +54,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
     Toolbar toolbar;
 
-    TextView activityTitle,notifMsgTV;
+    TextView activityTitle, notifMsgTV;
 
     RecyclerView commentsLV;
     CommentsAdapter mCommentsAdapter;
@@ -114,13 +114,13 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
                                                         .duration(700)
                                                         .playOn(findViewById(R.id.notification));
                                                 notification.setVisibility(View.GONE);
-                                                mCommentsAdapter=null;
+                                                mCommentsAdapter = null;
                                                 commentsArray = getMainComments();
                                                 mCommentsAdapter = new CommentsAdapter(getApplication(), commentsArray);
                                                 commentsLV.setAdapter(mCommentsAdapter);
-                                                for(int i=0;i<newComments.size();i++){
-                                                    ContentBean mContentBean=ContentParser.ContentCollection.get(newComments.get(i));
-                                                    if(mContentBean.getVisibility().equals("1")){
+                                                for (int i = 0; i < newComments.size(); i++) {
+                                                    ContentBean mContentBean = ContentParser.ContentCollection.get(newComments.get(i));
+                                                    if (mContentBean.getVisibility().equals("1")) {
                                                         scrollToComment(mContentBean.getId());
                                                         break;
                                                     }
@@ -129,13 +129,13 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
                                             }
                                         }
-
         );
     }
-    private void scrollToComment(String mCommentBeanId){
-        for(int i=0;i<commentsArray.size();i++){
-            ContentBean mBean=commentsArray.get(i);
-            if(mBean.getId().equals(mCommentBeanId)){
+
+    private void scrollToComment(String mCommentBeanId) {
+        for (int i = 0; i < commentsArray.size(); i++) {
+            ContentBean mBean = commentsArray.get(i);
+            if (mBean.getId().equals(mCommentBeanId)) {
                 commentsLV.smoothScrollToPosition(i);
                 break;
             }
@@ -194,7 +194,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
             ContentBean stateBean = ContentParser.ContentCollection.get(stateBeanId);
             if (stateBean.getVisibility().equals("1")) {
 
-//                if (isExistComment(stateBeanId)) continue;
+                if (isExistComment(stateBeanId)) continue;
 
                 if (adminClintId.equals(stateBean.getAuthorId())) {
                     int flag = 0;
@@ -215,7 +215,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
                     newComments.add(0, stateBeanId);
                 }
             } else {
-                List<ContentBean> mContentBeans=ContentParser.getChildContentForReview(stateBeanId);
+                List<ContentBean> mContentBeans = ContentParser.getChildContentForReview(stateBeanId);
                 if (!hasVisibleChilds(mContentBeans)) {
                     application.printLog(true, TAG, "Deleted Content");
 
@@ -231,7 +231,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
                 }
             }
         }
-        if (updates.size() > 0){
+        if (updates.size() > 0) {
             mBus.post(updates);
             mCommentsAdapter.notifyDataSetChanged();
         }
@@ -257,8 +257,8 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
     }
 
     Boolean isExistComment(String commentId) {
-        for(ContentBean bean:commentsArray){
-            if(bean.getId().equals(commentId))
+        for (ContentBean bean : commentsArray) {
+            if (bean.getId().equals(commentId))
                 return true;
         }
 
@@ -354,9 +354,9 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
             e.printStackTrace();
         }
         commentsArray = getMainComments();
-        mCommentsAdapter = new CommentsAdapter(this,commentsArray);
+        mCommentsAdapter = new CommentsAdapter(this, commentsArray);
         commentsLV.setAdapter(mCommentsAdapter);
-        newComments=new ArrayList<>();
+        newComments = new ArrayList<>();
         dismissProgressDialog();
     }
 
@@ -392,15 +392,15 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         commentsArray = new ArrayList<ContentBean>();
 
         for (ContentBean parentBean : getSortedMainComments()) {
-            List<ContentBean> mContentBeans=ContentParser.getChildContentForReview(parentBean.getId());
+            List<ContentBean> mContentBeans = ContentParser.getChildContentForReview(parentBean.getId());
 //            if(!hasVisibleChilds(mContentBeans))continue;
 
             commentsArray.add(parentBean);
             for (ContentBean b : mContentBeans) {
 
-                if(!b.getVisibility().equals("1")){
-                    List<ContentBean> contentBeans=ContentParser.getChildContentForReview(b.getId());
-                    if(!hasVisibleChilds(contentBeans))
+                if (!b.getVisibility().equals("1")) {
+                    List<ContentBean> contentBeans = ContentParser.getChildContentForReview(b.getId());
+                    if (!hasVisibleChilds(contentBeans))
                         continue;
                 }
 
@@ -423,9 +423,9 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
                 if (t.getContentType() == ContentTypeEnum.PARENT
                         ) {
 
-                    if(!t.getVisibility().equals("1")){
-                        List<ContentBean> mContentBeans=ContentParser.getChildContentForReview(t.getId());
-                        if(!hasVisibleChilds(mContentBeans))
+                    if (!t.getVisibility().equals("1")) {
+                        List<ContentBean> mContentBeans = ContentParser.getChildContentForReview(t.getId());
+                        if (!hasVisibleChilds(mContentBeans))
                             continue;
                     }
                     sortedList.add(t);
@@ -441,12 +441,14 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         });
         return sortedList;
     }
-    private Boolean hasVisibleChilds(List<ContentBean> mContentBeans){
-        for(ContentBean b:mContentBeans){
-            if(b.getVisibility().equals("1"))return true;
+
+    private Boolean hasVisibleChilds(List<ContentBean> mContentBeans) {
+        for (ContentBean b : mContentBeans) {
+            if (b.getVisibility().equals("1")) return true;
         }
         return false;
     }
+
     DialogInterface.OnClickListener tryAgain = new DialogInterface.OnClickListener() {
 
         @Override
@@ -458,6 +460,9 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
     View.OnClickListener postNewCommentListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            YoYo.with(Techniques.ZoomIn)
+                    .duration(700)
+                    .playOn(findViewById(R.id.notification));
             Intent intent = new Intent(CommentsActivity.this, NewActivity.class);
             intent.putExtra(LFSAppConstants.PURPOSE, LFSAppConstants.NEW_COMMENT);
             startActivity(intent);
