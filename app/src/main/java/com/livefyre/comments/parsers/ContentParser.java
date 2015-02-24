@@ -57,19 +57,19 @@ public class ContentParser {
             for (ContentBean t : ContentCollection.values()) {
 //                if (!t.getParentId().equals("")) {
 //                    if ((ContentCollection.get(t.getParentId())) != null) {
-                        ContentBean bean = ContentCollection.get(t
-                                .getParentId());
-                        if (bean != null) {
-                            List<String> list;
-                            if (bean.getChildBeanContent() != null) {
-                                list = bean.getChildBeanContent();
-                                list.add(list.size(), t.getId());
-                            } else {
-                                list = new ArrayList();
-                                list.add(t.getId());
-                            }
-                            bean.setChildBeanContent(list);
-                        }
+                ContentBean bean = ContentCollection.get(t
+                        .getParentId());
+                if (bean != null) {
+                    List<String> list;
+                    if (bean.getChildBeanContent() != null) {
+                        list = bean.getChildBeanContent();
+                        list.add(list.size(), t.getId());
+                    } else {
+                        list = new ArrayList();
+                        list.add(t.getId());
+                    }
+                    bean.setChildBeanContent(list);
+                }
 
 //                    }
 //                }
@@ -118,14 +118,9 @@ public class ContentParser {
         childs = new ArrayList();
         depth = 0;
         if (ContentCollection.get(contentId) != null) {
-
-
             if (ContentCollection.get(contentId).getChildBeanContent() != null)
                 getChildsForReview(ContentCollection.get(contentId)
                         .getChildBeanContent());
-
-
-
         } else {
             Log.d("Child", "No child");
         }
@@ -134,13 +129,6 @@ public class ContentParser {
 
     }
 
-
-    private Boolean hasVisibleChilds(List<ContentBean> mContentBeans){
-        for(ContentBean b:mContentBeans){
-            if(b.getVisibility().equals("1"))return true;
-        }
-        return false;
-    }
     private static void getChildsForReview(List<String> ja) {
 
         Collections.sort(ja, new Comparator<String>() {
@@ -167,8 +155,8 @@ public class ContentParser {
 
                 }
             }
-            else
-                childs.add(bean);
+//            else
+            childs.add(bean);
 
             if (bean.getChildBeanContent() != null) {
                 if (bean.getChildBeanContent().size() > 0) {
@@ -265,11 +253,11 @@ public class ContentParser {
                     for (int i = 0; i < votes.size(); i++) {
                         if (votes.get(i).getValue().equals("1"))
                             count++;
-                   }
+                    }
 
                     contentBean.setHelpfulcount(count);
 
-               }
+                }
             }
 
             if (!objectMain.isNull("vis")) {
@@ -403,7 +391,6 @@ public class ContentParser {
                             authorsSet.add(key);
                             updateSet.add(key);
                         } catch (JSONException e) {
-
                             e.printStackTrace();
                         }
                     }
@@ -695,7 +682,6 @@ public class ContentParser {
                         newBean = addContent(mainContent, 0, newBean, "stream");
                     }
                     ContentCollection.put(newBean.getId(), newBean);
-
                 } else {
                     // Deleted
                     String deletedParent = newBean.getParentId();
@@ -704,22 +690,18 @@ public class ContentParser {
                         Log.d("Depth ", "Parent Depth" + parentBean.getDepth());
                         newBean = addContent(mainContent,
                                 parentBean.getDepth() + 1, newBean, "stream");
-
                     } else {
                         // Parent Deleted
                         newBean = addContent(mainContent, 0, newBean, "stream");
-
                     }
-
                     ContentCollection.put(newBean.getId(), newBean);
-
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
 
-           }
+        }
     }
 
 

@@ -114,15 +114,32 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
                                                         .duration(700)
                                                         .playOn(findViewById(R.id.notification));
                                                 notification.setVisibility(View.GONE);
-                                                newComments.clear();
                                                 mCommentsAdapter=null;
                                                 commentsArray = getMainComments();
                                                 mCommentsAdapter = new CommentsAdapter(getApplication(), commentsArray);
                                                 commentsLV.setAdapter(mCommentsAdapter);
+                                                for(int i=0;i<newComments.size();i++){
+                                                    ContentBean mContentBean=ContentParser.ContentCollection.get(newComments.get(i));
+                                                    if(mContentBean.getVisibility().equals("1")){
+                                                        scrollToComment(mContentBean.getId());
+                                                        break;
+                                                    }
+                                                }
+                                                newComments.clear();
+
                                             }
                                         }
 
         );
+    }
+    private void scrollToComment(String mCommentBeanId){
+        for(int i=0;i<commentsArray.size();i++){
+            ContentBean mBean=commentsArray.get(i);
+            if(mBean.getId().equals(mCommentBeanId)){
+                commentsLV.smoothScrollToPosition(i);
+                break;
+            }
+        }
     }
 
     private void buildToolBar() {
@@ -170,14 +187,14 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
     }
 
-        @Override
+    @Override
     public void onDataUpdate(HashSet<String> authorsSet, HashSet<String> statesSet, HashSet<String> annotationsSet, HashSet<String> updates) {
         application.printLog(true, TAG, "" + statesSet);
         for (String stateBeanId : statesSet) {
             ContentBean stateBean = ContentParser.ContentCollection.get(stateBeanId);
             if (stateBean.getVisibility().equals("1")) {
 
-                if (isExistComment(stateBeanId)) continue;
+//                if (isExistComment(stateBeanId)) continue;
 
                 if (adminClintId.equals(stateBean.getAuthorId())) {
                     int flag = 0;
@@ -185,7 +202,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
                         ContentBean contentBean = commentsArray.get(i);
                         if (contentBean.getId().equals(stateBean.getParentId())) {
                             commentsArray.add(i + 1, stateBean);
-//                            mCommentsAdapter.notifyItemInserted(i + 1);
+                            mCommentsAdapter.notifyItemInserted(i + 1);
                             flag = 1;
                             break;
                         }
@@ -214,13 +231,13 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
                 }
             }
         }
-        if (updates.size() > 0)
+        if (updates.size() > 0){
             mBus.post(updates);
-        mCommentsAdapter.notifyDataSetChanged();
+            mCommentsAdapter.notifyDataSetChanged();
+        }
 
 
         if (newComments.size() > 0) {
-
             if (newComments.size() == 1) {
                 notifMsgTV.setText(newComments.size() + " New Comment");
 
@@ -240,7 +257,13 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
     }
 
     Boolean isExistComment(String commentId) {
-        if (commentsArray.contains(ContentParser.ContentCollection.get(commentId))) return true;
+        for(ContentBean bean:commentsArray){
+            if(bean.getId().equals(commentId))
+                return true;
+        }
+
+
+//        if (commentsArray.contains(ContentParser.ContentCollection.get(commentId))) return true;
         return false;
     }
 
@@ -370,7 +393,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
         for (ContentBean parentBean : getSortedMainComments()) {
             List<ContentBean> mContentBeans=ContentParser.getChildContentForReview(parentBean.getId());
-            if(!hasVisibleChilds(mContentBeans))continue;
+//            if(!hasVisibleChilds(mContentBeans))continue;
 
             commentsArray.add(parentBean);
             for (ContentBean b : mContentBeans) {
