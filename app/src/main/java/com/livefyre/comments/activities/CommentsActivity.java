@@ -223,7 +223,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
                         ContentBean bean = commentsArray.get(i);
                         if (bean.getId().equals(stateBeanId)) {
                             commentsArray.remove(i);
-                            mCommentsAdapter.notifyItemRemoved(i);
+//                            mCommentsAdapter.notifyItemRemoved(i);
                             break;
 
                         }

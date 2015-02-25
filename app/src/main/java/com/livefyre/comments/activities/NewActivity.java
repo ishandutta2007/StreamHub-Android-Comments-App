@@ -47,7 +47,7 @@ public class NewActivity extends BaseActivity {
     RelativeLayout deleteCapturedImage;
     JSONObject imgObj;
     //id-selected comment Id Used for editing and new reply
-    String imgUrl, purpose, id,body;
+    String imgUrl, purpose, id, body;
     boolean isEdit;
 
     @Override
@@ -67,10 +67,9 @@ public class NewActivity extends BaseActivity {
         Intent intent = getIntent();
         purpose = intent.getStringExtra(LFSAppConstants.PURPOSE);
 
-        if (purpose.equals(LFSAppConstants.NEW_COMMENT)){
+        if (purpose.equals(LFSAppConstants.NEW_COMMENT)) {
 
-        }
-        else if (purpose.equals(LFSAppConstants.NEW_REPLY)) {
+        } else if (purpose.equals(LFSAppConstants.NEW_REPLY)) {
             id = intent.getStringExtra(LFSAppConstants.ID);
         } else if (purpose.equals(LFSAppConstants.EDIT)) {
             id = intent.getStringExtra(LFSAppConstants.ID);
@@ -107,8 +106,7 @@ public class NewActivity extends BaseActivity {
         if (purpose.equals(LFSAppConstants.NEW_COMMENT)) {
             commentEt.setHint("Write your comment here...");//setting hint to Edittext
             activityName.setText("New Comment");
-        }
-        else if (purpose.equals(LFSAppConstants.NEW_REPLY)) {
+        } else if (purpose.equals(LFSAppConstants.NEW_REPLY)) {
             commentEt.setHint("Write your Reply here...");//setting hint to Edittext
             activityName.setText("Reply");
             attachImageLL.setVisibility(View.GONE);//Hide Image Selection option
@@ -121,14 +119,14 @@ public class NewActivity extends BaseActivity {
         ImageView homeIcon = (ImageView) findViewById(R.id.activityIcon);
         homeIcon.setBackgroundResource(R.drawable.close_b);
 
-        LinearLayout activityIconLL= (LinearLayout) findViewById(R.id.activityIconLL);
+        LinearLayout activityIconLL = (LinearLayout) findViewById(R.id.activityIconLL);
         activityIconLL.setOnClickListener(homeIconListener);
 
         //Action
         TextView actionTv = (TextView) findViewById(R.id.actionTv);
         actionTv.setText("POST");
 
-        LinearLayout actionLL= (LinearLayout) findViewById(R.id.actionLL);
+        LinearLayout actionLL = (LinearLayout) findViewById(R.id.actionLL);
         actionLL.setVisibility(View.VISIBLE);
         actionLL.setOnClickListener(actionTvListener);
 
@@ -158,7 +156,7 @@ public class NewActivity extends BaseActivity {
     void postNewReply(String body) {
         showProgressDialog();
 
-         if (purpose.equals(LFSAppConstants.NEW_REPLY)) {
+        if (purpose.equals(LFSAppConstants.NEW_REPLY)) {
             Log.d("REPLY", "IN NEW REPLY");
             HashMap<String, Object> perameters = new HashMap<>();
             perameters.put(LFSConstants.LFSPostBodyKey, body);
