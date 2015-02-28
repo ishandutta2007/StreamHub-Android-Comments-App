@@ -489,8 +489,8 @@ public class FilePicker extends Activity {
 
         //Check for API key and finish if not set
         if (!FilePickerAPI.isKeySet()) {
-            Toast.makeText(this, "No Filepicker.io API Key set!",
-                    Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, "No Filepicker.io API Key set!",
+//                    Toast.LENGTH_LONG).show();
             setResult(RESULT_CANCELED);
             finish();
         }

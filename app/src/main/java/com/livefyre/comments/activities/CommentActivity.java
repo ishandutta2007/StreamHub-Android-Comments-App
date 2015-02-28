@@ -510,7 +510,7 @@ public class CommentActivity extends BaseActivity {
 
     private void populateData() {
         if (contentId == null||ContentParser.ContentCollection==null) {
-            showToast("Something went Wrong.");
+//            showToast("Something went Wrong.");
             finish();
         } else {
             comment = ContentParser.ContentCollection.get(contentId);

@@ -44,16 +44,16 @@
                     android:id="@+id/attacheImageFL"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="#cdcdcd"
                     android:visibility="gone">
 
                     <ProgressBar
+                        android:id="@+id/progressBar"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:background="@null"
-                        android:id="@+id/progressBar"
-                         />
+                        android:layout_gravity="center"
+                        android:background="@null"
+                        android:gravity="center" />
 
                     <ImageView
                         android:id="@+id/capturedImage"
