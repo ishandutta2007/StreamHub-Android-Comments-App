@@ -1,13 +1,17 @@
 package com.livefyre.comments.parsers;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.livefyre.comments.AppSingleton;
+import com.livefyre.comments.activities.CommentActivity;
 import com.livefyre.comments.listeners.ContentUpdateListener;
 import com.livefyre.comments.models.AuthorsBean;
 import com.livefyre.comments.models.CommentStatus;
 import com.livefyre.comments.models.ContentBean;
 import com.livefyre.comments.models.ContentTypeEnum;
 import com.livefyre.comments.models.Vote;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,13 +36,16 @@ public class ContentParser {
     int i = 0;
     int visibilityCount = 0;
     public static String lastEvent = "0";
+    static Context mContext;
 
-    public ContentParser(JSONObject jsonResponseObject) {
+    public ContentParser(JSONObject jsonResponseObject, Context mContext) {
         this.jsonResponseObject = jsonResponseObject;
+//        this.mContext=mContext;
     }
 
     private ContentUpdateListener l1;
     private static int countFlag = 0;
+
     public void getContentFromResponse(ContentUpdateListener l1)
             throws JSONException {
         this.l1 = l1;
@@ -145,7 +152,7 @@ public class ContentParser {
         for (int i = 0; i < ja.size(); i++) {
 
             ContentBean bean = ContentCollection.get(ja.get(i));
-            if(!bean.getVisibility().equals("1")){
+            if (!bean.getVisibility().equals("1")) {
                 if (bean.getChildBeanContent() != null) {
                     Log.d("Log childs", "" + bean.getChildBeanContent().toString());
                     if (findChildsVisibleStatus(bean.getChildBeanContent())) {
@@ -184,7 +191,7 @@ public class ContentParser {
 
     }
 
-    public static void addChild(JSONArray ja) throws JSONException {
+    public void addChild(JSONArray ja) throws JSONException {
         for (int i = 0; i < ja.length(); i++) {
             JSONObject jo = (JSONObject) ja.get(i);
             if (jo.getJSONObject("content").has("oembed")) {
@@ -195,10 +202,14 @@ public class ContentParser {
                     if (!jo.isNull("event"))
                         lastEvent = jo.getString("event");
                     ContentBean bean = ContentCollection.get(targetId);
-                    if (bean != null)
+                    if (bean != null) {
                         bean.setOembedUrl(jo.getJSONObject("content")
                                 .getJSONObject("oembed").getString("url"));
+                           l1.loadImage(jo.getJSONObject("content")
+                                   .getJSONObject("oembed").getString("url"));
+                    }
                 }
+
 
             } else {
                 ContentBean bean = addContent(jo, depth, null, "bootstrap");
@@ -450,9 +461,8 @@ public class ContentParser {
         }
 
 
-
         updateChilds(updateSet);
-        l1.onDataUpdate(authorsSet,statesSet,annotationsSet,updateSet);
+        l1.onDataUpdate(authorsSet, statesSet, annotationsSet, updateSet);
 
     }
 
@@ -703,7 +713,6 @@ public class ContentParser {
 
         }
     }
-
 
 
 }

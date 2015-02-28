@@ -46,13 +46,22 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone">
 
+                    <ProgressBar
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:background="@null"
+                        android:id="@+id/progressBar"
+                         />
+
                     <ImageView
                         android:id="@+id/capturedImage"
                         android:layout_width="wrap_content"
                         android:layout_height="200dp"
                         android:adjustViewBounds="true"
                         android:background="@drawable/white_image"
-                        android:scaleType="fitXY" />
+                        android:scaleType="centerCrop" />
 
                     <RelativeLayout
                         android:id="@+id/deleteCapturedImage"

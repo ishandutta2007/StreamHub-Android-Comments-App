@@ -7,4 +7,5 @@ import java.util.HashSet;
  */
 public interface ContentUpdateListener {
     void onDataUpdate(HashSet<String> authorsSet,HashSet<String> statesSet, HashSet<String> annotationsStates,HashSet<String> updatesSet);
+    void loadImage(String imageURL);
 }

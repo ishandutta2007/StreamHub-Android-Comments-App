@@ -2,6 +2,7 @@ package com.filepicker.sdk;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -53,12 +54,12 @@ import java.util.ArrayList;
 
 
 public class FilePickerAPI {
-
+    private SharedPreferences sharedPreferences;
     public final static String FPHOSTNAME = "dialog.filepicker.io";
     public final static String FPBASEURL = "https://" + FPHOSTNAME + "/";
 
     //TODO PATCH Better security changed to protected
-    protected static String FPAPIKEY;
+    protected static String FPAPIKEY = "0";
 
     public static String FILE_GET_JS_SESSION_PART = "{\"apikey\":\""
             + FPAPIKEY + "\", \"version\":\"v0\"";
@@ -82,8 +83,10 @@ public class FilePickerAPI {
             return filepickerapi;
     }
 
+    static String FPKEY = "fpkey";
+
     public static void setKey(String key) {
-        if(key != null) {
+        if (key != null) {
             FPAPIKEY = key;
         }
         FILE_GET_JS_SESSION_PART = "{\"app\":{\"apikey\":\""
@@ -91,8 +94,9 @@ public class FilePickerAPI {
     }
 
     protected static boolean isKeySet() {
-    	Log.d("FPAPIKEY",""+FPAPIKEY);
-        return FPAPIKEY.length() > 0;
+//    	Log.d("FPAPIKEY",""+FPAPIKEY);
+        if (FPAPIKEY.equals("0")) return false;
+        else return true;
     }
 
     protected static void debug(String msg) {
@@ -134,28 +138,28 @@ public class FilePickerAPI {
                 new String[]{"image/jpg"}, R.drawable.camera_b,
                 false, ""));
         services.add(new Service("Dropbox", "/Dropbox/",
-                new String[] { "*/*" }, R.drawable.dropbox,
+                new String[]{"*/*"}, R.drawable.dropbox,
                 true, "dropbox"));
         services.add(new Service("Facebook", "/Facebook/",
-                new String[] { "image/*" }, R.drawable.facebook,
+                new String[]{"image/*"}, R.drawable.facebook,
                 true, "facebook"));
         services.add(new Service("Instagram", "/Instagram/",
-                new String[] { "image/*" }, R.drawable.instagram,
+                new String[]{"image/*"}, R.drawable.instagram,
                 true, "instagram"));
         services.add(new Service("Flickr", "/Flickr/",
-                new String[] { "image/*" }, R.drawable.flickr,
+                new String[]{"image/*"}, R.drawable.flickr,
                 true, "flickr"));
         services.add(new Service("Picasa", "/Picasa/",
-                new String[] { "image/*" }, R.drawable.picasa,
+                new String[]{"image/*"}, R.drawable.picasa,
                 true, "picasa"));
-        services.add(new Service("Box", "/Box/", new String[] { "*/*" },
+        services.add(new Service("Box", "/Box/", new String[]{"*/*"},
                 R.drawable.box, true, "box"));
 //        services.add(new Service("Gmail", "/Gmail/", new String[] { "*/*" },
 //                R.drawable.glyphicons_399_email, false, "gmail"));
 //        services.add(new Service("Github", "/Github/", new String[] { "*/*" },
 //                R.drawable.glyphicons_381_github, false, "github"));
         services.add(new Service("Google Drive", "/GDrive/",
-                new String[] { "*/*" }, R.drawable.google_drive, false, "gdrive"));
+                new String[]{"*/*"}, R.drawable.google_drive, false, "gdrive"));
         return services;
     }
 
@@ -206,7 +210,7 @@ public class FilePickerAPI {
     }
 
     private Inode inodeForJSONObject(JSONObject content) throws JSONException {
-        debug("inodeForJSONObject: " + content.toString() );
+        debug("inodeForJSONObject: " + content.toString());
         String displayName = content.getString("display_name");
         String path = content.getString("link_path");
         boolean is_dir = content.getBoolean("is_dir");
@@ -374,7 +378,7 @@ public class FilePickerAPI {
     }
 
     private File getTempFileForName(String filename, Context context) {
-        debug("getTempFileForName" );
+        debug("getTempFileForName");
         boolean mExternalStorageAvailable = false;
         boolean mExternalStorageWriteable = false;
         String state = Environment.getExternalStorageState();
@@ -404,7 +408,7 @@ public class FilePickerAPI {
     // Download uri and store into a tmp file
     public String[] downloadUrl(String URI, String filename, Context context)
             throws IllegalStateException, IOException {
-        debug("downloadUrl" );
+        debug("downloadUrl");
         HttpGet httpget = new HttpGet(URI.replace(" ", "%20"));
         AndroidHttpClient httpClient = getHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpget, httpContext);
@@ -433,7 +437,7 @@ public class FilePickerAPI {
     }
 
     public void saveFileAs(String path, Uri contentURI, Context context) {
-        debug("saveFileAs" );
+        debug("saveFileAs");
         try {
             String url = uploadFileToTemp(contentURI, context).getFPUrl();
             HttpPost httppost = new HttpPost(URI.create(FPBASEURL + "api/path"
@@ -463,9 +467,9 @@ public class FilePickerAPI {
         return buffer.toByteArray();
     }
 
-    public FPFile uploadFileToTemp(Uri contentURI, Context context){
+    public FPFile uploadFileToTemp(Uri contentURI, Context context) {
         debug("uploadFileToTemp");
-        try{
+        try {
             String postUrl = FPBASEURL + "api/path/computer/" + "?js_session="
                     + URLEncoder.encode(getJSSession(), "utf-8");
             HttpPost httppost = new HttpPost(URI.create(postUrl));
@@ -476,17 +480,17 @@ public class FilePickerAPI {
             httppost.setEntity(entity);
             entity.setChunked(false);
             httppost.setHeader("X-File-Name", "file" + "testfile.jpg");
-            httppost.setHeader("Content-Type",  "application/octet-stream");
+            httppost.setHeader("Content-Type", "application/octet-stream");
             String response = getStringFromNetworkRequest(httppost);
 
             //TODO PATCH! Real filename from URI
             String pathFilename = "testfile.jpg";
-            if(contentURI!=null) {
+            if (contentURI != null) {
                 pathFilename = getRealPathFromURI(context, contentURI);
-                if(pathFilename != null)
-                    pathFilename = pathFilename.substring(pathFilename.lastIndexOf("/")+1);
+                if (pathFilename != null)
+                    pathFilename = pathFilename.substring(pathFilename.lastIndexOf("/") + 1);
                 else
-                    pathFilename = contentURI.toString().substring(contentURI.toString().lastIndexOf("/")+1);
+                    pathFilename = contentURI.toString().substring(contentURI.toString().lastIndexOf("/") + 1);
             } else {
                 contentURI = Uri.parse("");
             }
@@ -503,7 +507,7 @@ public class FilePickerAPI {
 
     public FPFile getLocalFileForPath(String path, Context context)
             throws AuthError {
-        debug("getLocalFileForPath" );
+        debug("getLocalFileForPath");
         try {
             String query = getJSSession();
             HttpGet httpget = new HttpGet(FPBASEURL + "api/path"
@@ -514,7 +518,7 @@ public class FilePickerAPI {
             JSONObject json;
             try {
                 json = new JSONObject(response);
-                debug("getLocalFileForPath: " + json.toString() );
+                debug("getLocalFileForPath: " + json.toString());
                 String url = json.getString("url");
                 String filename = json.getString("filename");
                 return new FPFile(downloadUrl(url, filename, context), json);
@@ -634,8 +638,8 @@ public class FilePickerAPI {
     public String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);

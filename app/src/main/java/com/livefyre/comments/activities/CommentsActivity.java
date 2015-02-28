@@ -4,11 +4,15 @@ package com.livefyre.comments.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +35,7 @@ import com.livefyre.comments.parsers.ContentParser;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.otto.Bus;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +53,8 @@ import livefyre.streamhub.AdminClient;
 import livefyre.streamhub.BootstrapClient;
 import livefyre.streamhub.StreamClient;
 
+import static android.support.v7.widget.RecyclerView.*;
+
 public class CommentsActivity extends BaseActivity implements ContentUpdateListener {
     public static final String TAG = CommentsActivity.class.getSimpleName();
 
@@ -61,6 +68,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
     ImageButton postNewCommentIv;
     ArrayList<ContentBean> commentsArray;
     ContentParser content;
+    private SwipeRefreshLayout swipeView;
     LinearLayout notification;
     Bus mBus = application.getBus();
     private String adminClintId = "No";
@@ -106,6 +114,22 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
             }
         }));
+        swipeView.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+        swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeView.setRefreshing(true);
+                mCommentsAdapter = null;
+                commentsArray.clear();
+                mCommentsAdapter = new CommentsAdapter(getApplication(), commentsArray);
+                commentsLV.setAdapter(mCommentsAdapter);
+                bootstrapClientCall();
+
+                YoYo.with(Techniques.FadeIn)
+                        .duration(700)
+                        .playOn(findViewById(R.id.commentsLV));
+            }
+        });
         commentsLV.setOnScrollListener(onScrollListener);
         notification.setOnClickListener(new View.OnClickListener() {
                                             @Override
@@ -167,6 +191,8 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         postNewCommentIv = (ImageButton) findViewById(R.id.postNewCommentIv);
         notifMsgTV = (TextView) findViewById(R.id.notifMsgTV);
         notification = (LinearLayout) findViewById(R.id.notification);
+        swipeView = (SwipeRefreshLayout) findViewById(R.id.swipe);
+
     }
 
     void adminClintCall() {
@@ -223,7 +249,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
                         ContentBean bean = commentsArray.get(i);
                         if (bean.getId().equals(stateBeanId)) {
                             commentsArray.remove(i);
-//                            mCommentsAdapter.notifyItemRemoved(i);
+                            mCommentsAdapter.notifyItemRemoved(i);
                             break;
 
                         }
@@ -254,6 +280,12 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         }
 
 
+    }
+
+    @Override
+    public void loadImage(String imageURL) {
+        if(imageURL.length()>0)
+            Picasso.with(getBaseContext()).load(imageURL);
     }
 
     Boolean isExistComment(String commentId) {
@@ -335,7 +367,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
             application.printLog(false, TAG + "-InitCallback-onSuccess", data.toString());
 
             buildCommentList(data);
-
+            swipeView.setRefreshing(false);
         }
 
         @Override
@@ -347,7 +379,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
     void buildCommentList(String data) {
         try {
-            content = new ContentParser(new JSONObject(data));
+            content = new ContentParser(new JSONObject(data),getBaseContext());
             content.getContentFromResponse(this);
             streamClintCall();
         } catch (JSONException e) {
@@ -357,6 +389,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         mCommentsAdapter = new CommentsAdapter(this, commentsArray);
         commentsLV.setAdapter(mCommentsAdapter);
         newComments = new ArrayList<>();
+        swipeView.setEnabled(true);
         dismissProgressDialog();
     }
 
@@ -393,8 +426,6 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
 
         for (ContentBean parentBean : getSortedMainComments()) {
             List<ContentBean> mContentBeans = ContentParser.getChildContentForReview(parentBean.getId());
-//            if(!hasVisibleChilds(mContentBeans))continue;
-
             commentsArray.add(parentBean);
             for (ContentBean b : mContentBeans) {
 
@@ -403,10 +434,6 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
                     if (!hasVisibleChilds(contentBeans))
                         continue;
                 }
-
-
-//                List<ContentBean> childChildsList=ContentParser.getChildContentForReview(b.getId());
-//                if(!hasVisibleChilds(childChildsList))continue;
                 commentsArray.add(b);
             }
         }
@@ -470,7 +497,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
     };
 
 
-    static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+    static class RecyclerTouchListener implements OnItemTouchListener {
 
         private GestureDetector gestureDetector;
         private ClickListener clickListener;
@@ -514,7 +541,7 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         public void onLongClick(View view, int position);
     }
 
-    public RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+    public OnScrollListener onScrollListener = new OnScrollListener() {
         boolean hideToolBar = false;
 
         @Override
@@ -534,9 +561,9 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
             super.onScrolled(recyclerView, dx, dy);
             if (dy > 2) {
                 hideToolBar = true;
-
             } else if (dy < -1) {
                 hideToolBar = false;
+
             }
         }
     };

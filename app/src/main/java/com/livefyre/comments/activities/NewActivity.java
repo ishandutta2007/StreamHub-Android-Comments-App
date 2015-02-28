@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ import com.livefyre.comments.LFUtils;
 import com.livefyre.comments.R;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -44,6 +46,7 @@ public class NewActivity extends BaseActivity {
     LinearLayout attachImageLL;
     FrameLayout attacheImageFL;
     ImageView capturedImage;
+    ProgressBar progressBar;
     RelativeLayout deleteCapturedImage;
     JSONObject imgObj;
     //id-selected comment Id Used for editing and new reply
@@ -86,6 +89,7 @@ public class NewActivity extends BaseActivity {
         capturedImage = (ImageView) findViewById(R.id.capturedImage);
         deleteCapturedImage = (RelativeLayout) findViewById(R.id.deleteCapturedImage);
         commentEt = (TextView) findViewById(R.id.commentEt);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
     }
 
     private void setListenersToViews() {
@@ -109,7 +113,7 @@ public class NewActivity extends BaseActivity {
         } else if (purpose.equals(LFSAppConstants.NEW_REPLY)) {
             commentEt.setHint("Write your Reply here...");//setting hint to Edittext
             activityName.setText("Reply");
-            attachImageLL.setVisibility(View.GONE);//Hide Image Selection option
+            attachImageLL.setVisibility(View.VISIBLE);//Hide Image Selection option
         } else if (purpose.equals(LFSAppConstants.EDIT)) {
             activityName.setText("Edit");
             attachImageLL.setVisibility(View.GONE);//Hide Image Selection option
@@ -137,6 +141,7 @@ public class NewActivity extends BaseActivity {
 
         showProgressDialog();
         HashMap<String, Object> perameters = new HashMap<>();
+
         perameters.put(LFSConstants.LFSPostBodyKey, body);
         perameters.put(LFSConstants.LFSPostType,
                 LFSConstants.LFSPostTypeComment);
@@ -164,6 +169,9 @@ public class NewActivity extends BaseActivity {
                     LFSConstants.LFSPostTypeReply);
             perameters.put(LFSConstants.LFSPostUserTokenKey,
                     LFSConfig.USER_TOKEN);
+            if (imgObj != null)
+                perameters.put(LFSConstants.LFSPostAttachmentsKey,
+                        (new JSONArray().put(imgObj)).toString());
             try {
                 WriteClient.postContent(LFSConfig.NETWORK_ID,
                         LFSConfig.COLLECTION_ID, id, LFSConfig.USER_TOKEN,
@@ -326,10 +334,14 @@ public class NewActivity extends BaseActivity {
     View.OnClickListener attachImageLLListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(NewActivity.this, FilePicker.class);
-            FilePickerAPI.setKey(LFSConfig.FILEPICKER_API_KEY);
+            if(LFSConfig.FILEPICKER_API_KEY.length()==0){
+                showToast("Something went wrong.");
+            }else{
+                Intent intent = new Intent(NewActivity.this, FilePicker.class);
+                FilePickerAPI.setKey(LFSConfig.FILEPICKER_API_KEY);
+                startActivityForResult(intent, FilePickerAPI.REQUEST_CODE_GETFILE);
+            }
 
-            startActivityForResult(intent, FilePickerAPI.REQUEST_CODE_GETFILE);
         }
     };
 
@@ -361,13 +373,11 @@ public class NewActivity extends BaseActivity {
                 attacheImageFL.setVisibility(View.GONE);
                 return;
             }
-
             attachImageLL.setVisibility(View.GONE);
             attacheImageFL.setVisibility(View.VISIBLE);
 
             String imgUrl = data.getExtras().getString("fpurl");
             application.printLog(true, TAG + "Uploaded Image URL", imgUrl + " ");
-
             try {
                 imgObj = new JSONObject();
                 imgObj.put("link", imgUrl);
@@ -376,16 +386,29 @@ public class NewActivity extends BaseActivity {
                 imgObj.put("type", "photo");
                 imgObj.put("url", imgUrl);
                 try {
-                    Picasso.with(getBaseContext()).load(imgUrl).fit()
-                            .into(capturedImage);
+                    progressBar.setVisibility(View.VISIBLE);
+                    Picasso.with(getBaseContext()).load(imgUrl).fit().into(capturedImage, new ImageLoadCallBack());
                 } catch (Exception e) {
 
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
-
             }
+        }
+    }
+
+    private class ImageLoadCallBack implements Callback {
+
+        @Override
+        public void onSuccess() {
+            //Hide
+            progressBar.setVisibility(View.GONE);
+
+        }
+
+        @Override
+        public void onError() {
+            //Hide
         }
     }
 }

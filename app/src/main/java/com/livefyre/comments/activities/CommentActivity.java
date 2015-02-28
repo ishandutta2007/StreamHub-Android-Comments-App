@@ -509,80 +509,86 @@ public class CommentActivity extends BaseActivity {
     }
 
     private void populateData() {
-         comment = ContentParser.ContentCollection.get(contentId);
-        //Author Name
-        authorNameTv.setText(comment.getAuthor().getDisplayName());
-        //Posted Date
-        postedDateOrTime.setText(LFUtils.getFormatedDate(
-                comment.getCreatedAt(), LFSAppConstants.SHART));
-        //Comment Body
-        commentBody.setText(LFUtils.trimTrailingWhitespace(Html
-                        .fromHtml(comment.getBodyHtml())),
-                TextView.BufferType.SPANNABLE);
+        if (contentId == null||ContentParser.ContentCollection==null) {
+            showToast("Something went Wrong.");
+            finish();
+        } else {
+            comment = ContentParser.ContentCollection.get(contentId);
 
-        Picasso.with(getApplicationContext()).load(comment.getAuthor().getAvatar()).fit().transform(new RoundedTransformation(90, 0)).into(avatarIv);
+            //Author Name
+            authorNameTv.setText(comment.getAuthor().getDisplayName());
+            //Posted Date
+            postedDateOrTime.setText(LFUtils.getFormatedDate(
+                    comment.getCreatedAt(), LFSAppConstants.SHART));
+            //Comment Body
+            commentBody.setText(LFUtils.trimTrailingWhitespace(Html
+                            .fromHtml(comment.getBodyHtml())),
+                    TextView.BufferType.SPANNABLE);
 
-        if (comment.getOembedUrl() != null) {
-            if (comment.getOembedUrl().length() > 0) {
-                imageAttachedToCommentIv.setVisibility(View.VISIBLE);
-                application.printLog(true, "comment.getOembedUrl()", comment.getOembedUrl() + " URL");
-                Picasso.with(getApplication()).load(comment.getOembedUrl()).fit().into(imageAttachedToCommentIv);
+            Picasso.with(getApplicationContext()).load(comment.getAuthor().getAvatar()).fit().transform(new RoundedTransformation(90, 0)).into(avatarIv);
+
+            if (comment.getOembedUrl() != null) {
+                if (comment.getOembedUrl().length() > 0) {
+                    imageAttachedToCommentIv.setVisibility(View.VISIBLE);
+                    application.printLog(true, "comment.getOembedUrl()", comment.getOembedUrl() + " URL");
+                    Picasso.with(getApplication()).load(comment.getOembedUrl()).fit().into(imageAttachedToCommentIv);
+                } else {
+                    imageAttachedToCommentIv.setVisibility(View.GONE);
+                }
             } else {
                 imageAttachedToCommentIv.setVisibility(View.GONE);
             }
-        } else {
-            imageAttachedToCommentIv.setVisibility(View.GONE);
-        }
 
 
-        if (comment.getVote() != null) {// know helpful value and set color
+            if (comment.getVote() != null) {// know helpful value and set color
 
-            if (comment.getVote().size() > 0) {
-                int helpfulFlag = 0;
+                if (comment.getVote().size() > 0) {
+                    int helpfulFlag = 0;
 
-                helpfulFlag = knowHelpfulValue(
-                        application
-                                .getDataFromSharedPrefs(LFSAppConstants.ID, ""),
-                        comment.getVote());
+                    helpfulFlag = knowHelpfulValue(
+                            application
+                                    .getDataFromSharedPrefs(LFSAppConstants.ID, ""),
+                            comment.getVote());
 
-                if (helpfulFlag == 1) {
-                    likeIv
-                            .setImageResource(R.drawable.like);
-                    likeCountTv.setTextColor(Color
-                            .parseColor("#e85b3f"));
-                } else if (helpfulFlag == 2) {
-                    likeIv
-                            .setImageResource(R.drawable.unlike);
-                    likeCountTv.setTextColor(Color
-                            .parseColor("#757575"));
+                    if (helpfulFlag == 1) {
+                        likeIv
+                                .setImageResource(R.drawable.like);
+                        likeCountTv.setTextColor(Color
+                                .parseColor("#e85b3f"));
+                    } else if (helpfulFlag == 2) {
+                        likeIv
+                                .setImageResource(R.drawable.unlike);
+                        likeCountTv.setTextColor(Color
+                                .parseColor("#757575"));
+                    } else {
+                        likeIv
+                                .setImageResource(R.drawable.unlike);
+                        likeCountTv.setTextColor(Color
+                                .parseColor("#757575"));
+                    }
+
+                    likeCountTv.setText(comment.getVote().size() + "");
+
                 } else {
                     likeIv
                             .setImageResource(R.drawable.unlike);
                     likeCountTv.setTextColor(Color
                             .parseColor("#757575"));
+                    likeCountTv.setText("0");
                 }
-
-                likeCountTv.setText(comment.getVote().size() + "");
 
             } else {
                 likeIv
                         .setImageResource(R.drawable.unlike);
-                likeCountTv.setTextColor(Color
-                        .parseColor("#757575"));
+                likeCountTv
+                        .setTextColor(Color.parseColor("#757575"));
                 likeCountTv.setText("0");
             }
 
-        } else {
-            likeIv
-                    .setImageResource(R.drawable.unlike);
-            likeCountTv
-                    .setTextColor(Color.parseColor("#757575"));
-            likeCountTv.setText("0");
+            likesFullTv.setVisibility(View.VISIBLE);
+            likesFullTv.setText(LFUtils.getFormatedDate(
+                    comment.getCreatedAt(), LFSAppConstants.DETAIL));
         }
-
-        likesFullTv.setVisibility(View.VISIBLE);
-        likesFullTv.setText(LFUtils.getFormatedDate(
-                comment.getCreatedAt(), LFSAppConstants.DETAIL));
     }
 
     private void getDataFromIntent() {
