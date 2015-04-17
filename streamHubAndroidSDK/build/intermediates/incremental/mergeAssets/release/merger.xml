@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/Users/kvanadev5/Developer/android/Livefyre-updated/streamHubAndroidSDK/src/main/assets"/></dataSet><dataSet config="release"><source path="/Users/kvanadev5/Developer/android/Livefyre-updated/streamHubAndroidSDK/src/release/assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="/Users/awesome/Developer/android/android-studio/livefyre-comments-android/streamHubAndroidSDK/src/main/assets"/></dataSet><dataSet config="release"><source path="/Users/awesome/Developer/android/android-studio/livefyre-comments-android/streamHubAndroidSDK/src/release/assets"/></dataSet></merger>
