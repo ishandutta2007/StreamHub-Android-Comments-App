@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/StreamHub-Android-Comments-App.iml" filepath="$PROJECT_DIR$/StreamHub-Android-Comments-App.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/filePickerSDK/filePickerSDK.iml" filepath="$PROJECT_DIR$/filePickerSDK/filePickerSDK.iml" />
-      <module fileurl="file://$PROJECT_DIR$/livefyre-comments-android.iml" filepath="$PROJECT_DIR$/livefyre-comments-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/streamHubAndroidSDK/streamHubAndroidSDK.iml" filepath="$PROJECT_DIR$/streamHubAndroidSDK/streamHubAndroidSDK.iml" />
     </modules>
   </component>
