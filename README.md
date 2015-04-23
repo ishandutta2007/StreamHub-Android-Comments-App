@@ -1,6 +1,6 @@
 StreamHub Android Comments Application
 =============================
-With Livefyre’s Demonstrated LiveComments application, users can easily rate and review products, services, articles or any other content in real time. They can recommend and comment on each other’s reviews, embed photos or other rich media, and share reviews to their social networks.
+Livefyre Community Comments replaces your default comments with real-time conversations. Our social integration features make it easy to capture all the conversations going on about your posts across Twitter and Facebook, and pull your friends into the conversation.
 
 Make Android apps powered by Livefyre StreamHub
 
@@ -12,19 +12,19 @@ Installation
 Android Comment App Build Steps:
 
 1. Clone this repo to get the project
-2. Open Android Studio, file > Open, and open the comments app (cloned in step 1)
- * Optionally you can change the config params for the endpoints under StreamHub-Android-Comments-App/streamHubAndroidSDK/src/main/java/livefyre/streamhub/Config.java
-2. Ensure that you have the <a href="https://github.com/Livefyre/StreamHub-Android-SDK.git">SDK</a> loaded into your environment
- * You might have to explictily "File" => "Import Module" and point to the StreamHub SDK location.
-3. Click on the Build Gradle button or just "run" if you are using Android Studio as it will manage gradle explicitly with UI elements.
- * Clicking the Run button will open the app in the simulator or device if it is connected.
+2. Open Android Studio, File > Open, and open the comments app (cloned in step 1)
+  * Optionally you can change the config params for the endpoints under StreamHub-Android-Comments-App/streamHubAndroidSDK/src/main/java/livefyre/streamhub/Config.java
+3. Ensure that you have the <a href="https://github.com/Livefyre/StreamHub-Android-SDK.git">SDK</a> loaded into your environment
+  * You might have to explictily "File" => "Import Module" and point to the StreamHub SDK location.
+4. Click on the Build Gradle button or just "run" if you are using Android Studio as it will manage gradle explicitly with UI elements.
+  * Clicking the Run button will open the app in the simulator or device if it is connected.
 
 Customizing the SDK
 =============================
 In some cases, the following might be required when customizing the SDK:
 
 1. git clone https://github.com/Livefyre/StreamHub-Android-SDK.git
-2. In your example app go to "File" => Project Structure > select '+' on opened window > Select 'Import Existing Project' in 'More Modules' Section in opened window > Browse to the SDK location cloned in the step above.
+2. In your example app go to "File" => Project Structure > select '+' in opened window > Select 'Import Existing Project' in 'More Modules' Section in opened window > Browse to the SDK location cloned in the step above.
 3. In **build.gradle** file add following before running the app:
 
 ```
