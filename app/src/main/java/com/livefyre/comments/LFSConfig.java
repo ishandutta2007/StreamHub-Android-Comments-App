@@ -5,7 +5,7 @@ public class LFSConfig {
     public static String NETWORK_ID = "labs.fyre.co";
     public static String SITE_ID = "320568";
     public static String ARTICLE_ID = "custom-1379372287037";
-    public static final String FILEPICKER_API_KEY = "AYNlO8P2PT6qnCfo9eCw2z";
+    public static final String FILEPICKER_API_KEY = "FILEPICKER_API_KEY";
 
     //USERS
     public static String Demo = "eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJkb21haW4iOiAibGFicy5meXJlLmNvIiwgImV4cGlyZXMiOiAxMDE0MDM3Mjg1MTIuNTk0MTYsICJ1c2VyX2lkIjogImRlbW8wIn0.0u1odupwow0tzBFhNWYG1Vk8URLncMHYQCBhjjdBBL8";
