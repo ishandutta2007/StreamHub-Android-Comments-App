@@ -404,6 +404,10 @@ public class CommentsActivity extends BaseActivity implements ContentUpdateListe
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
         }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean b) {
+        }
     }
 
     public static interface ClickListener {
