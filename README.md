@@ -59,7 +59,7 @@ Clone the project, run the tests, and notice a few undocumented classes. Kindly 
 
 ## License
 
-Copyright (c) 2015 Livefyre
+Copyright (c) 2015 Livefyre, Inc.
 
 Licensed under the MIT License
 
