@@ -51,13 +51,32 @@ This Livefyre StreamHub Comments example App uses the following dependencies:
  * Picasso is an powerful image downloading and caching library for Android
 * [Picasso](https://github.com/square/otto)
  * Otto is an event bus designed to decouple different parts of your application while still allowing them to communicate efficiently.
- 
+
 * In build.gradle the preferred version for targetSdkVersion is 20, but 21  will also work if using SDK Manager,  Android 5.0 (API 21) is  downloaded and installed
 
 ### Developers
 Clone the project, run the tests, and notice a few undocumented classes. Kindly treat the project as alpha code.
 
 ## License
-Copyright 2013-2015 Livefyre Inc.
+
+Copyright (c) 2015 Livefyre, Inc.
 
 Licensed under the MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
