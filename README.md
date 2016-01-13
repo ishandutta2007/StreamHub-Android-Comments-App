@@ -1,6 +1,6 @@
 StreamHub Android Comments Application
 =============================
-Livefyre Community Comments replaces your default comments with real-time conversations. Our social integration features make it easy to capture all the conversations going on about your posts across Twitter and Facebook, and pull your friends into the conversation.
+Livefyre Comments replaces your default comments with real-time conversations. Our social integration features make it easy to capture all the conversations going on about your posts across Twitter and Facebook, and pull your friends into the conversation.
 
 Make Android apps powered by Livefyre StreamHub
 
