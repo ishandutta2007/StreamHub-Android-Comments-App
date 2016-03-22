@@ -11,9 +11,8 @@ local.properties
 # Gradle generated files
 .gradle/
 
-build/intermediates/model_data.bin
-build/intermediates/*
-build/intermediates/dex-cache/cache.xml
+/build
+build/
 
 # Signing files
 .signing/

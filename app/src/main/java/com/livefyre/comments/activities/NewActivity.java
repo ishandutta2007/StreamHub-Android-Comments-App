@@ -14,8 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.filepicker.sdk.FilePicker;
-import com.filepicker.sdk.FilePickerAPI;
 import com.livefyre.comments.BaseActivity;
 import com.livefyre.comments.LFSAppConstants;
 import com.livefyre.comments.LFSConfig;
@@ -24,7 +22,6 @@ import com.livefyre.comments.R;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +33,9 @@ import java.util.HashMap;
 import livefyre.streamhub.LFSActions;
 import livefyre.streamhub.LFSConstants;
 import livefyre.streamhub.WriteClient;
+
+//import com.filepicker.sdk.FilePicker;
+//import com.filepicker.sdk.FilePickerAPI;
 
 public class NewActivity extends BaseActivity {
     public static final String TAG = NewActivity.class.getSimpleName();
@@ -274,7 +274,6 @@ public class NewActivity extends BaseActivity {
                 JSONObject errorJson = new JSONObject(content);
                 if (!errorJson.isNull("msg")) {
                     showAlert(errorJson.getString("msg"), "TRY AGAIN", tryAgain);
-
                 } else {
                     showAlert("Something went wrong.", "TRY AGAIN", tryAgain);
                 }
@@ -333,12 +332,13 @@ public class NewActivity extends BaseActivity {
     View.OnClickListener attachImageLLListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(LFSConfig.FILEPICKER_API_KEY.length()==0){
+            if (LFSConfig.FILEPICKER_API_KEY.length() == 0) {
                 showToast("Something went wrong.");
-            }else{
-                Intent intent = new Intent(NewActivity.this, FilePicker.class);
-                FilePickerAPI.setKey(LFSConfig.FILEPICKER_API_KEY);
-                startActivityForResult(intent, FilePickerAPI.REQUEST_CODE_GETFILE);
+            } else {
+                showToast("This feature has been removed for testing.");
+//                Intent intent = new Intent(NewActivity.this, FilePicker.class);
+//                FilePickerAPI.setKey(LFSConfig.FILEPICKER_API_KEY);
+//                startActivityForResult(intent, FilePickerAPI.REQUEST_CODE_GETFILE);
             }
         }
     };
@@ -347,9 +347,10 @@ public class NewActivity extends BaseActivity {
     DialogInterface.OnClickListener selectImageDialogAction = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface arg0, int arg1) {
-            Intent intent = new Intent(NewActivity.this, FilePicker.class);
-            FilePickerAPI.setKey(LFSConfig.FILEPICKER_API_KEY);
-            startActivityForResult(intent, FilePickerAPI.REQUEST_CODE_GETFILE);
+            showToast("This feature has been removed for testing.");
+//            Intent intent = new Intent(NewActivity.this, FilePicker.class);
+//            FilePickerAPI.setKey(LFSConfig.FILEPICKER_API_KEY);
+//            startActivityForResult(intent, FilePickerAPI.REQUEST_CODE_GETFILE);
         }
     };
 
@@ -363,36 +364,37 @@ public class NewActivity extends BaseActivity {
     //On Image Selected
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == FilePickerAPI.REQUEST_CODE_GETFILE) {
-            if (resultCode != RESULT_OK) {
-                // Result was cancelled by the user or there was an error
-                showAlert("No Image Selected.", "SELECT IMAGE", selectImageDialogAction);
-                attachImageLL.setVisibility(View.VISIBLE);
-                attacheImageFL.setVisibility(View.GONE);
-                return;
-            }
-            attachImageLL.setVisibility(View.GONE);
-            attacheImageFL.setVisibility(View.VISIBLE);
-
-            String imgUrl = data.getExtras().getString("fpurl");
-            application.printLog(true, TAG + "Uploaded Image URL", imgUrl + " ");
-            try {
-                imgObj = new JSONObject();
-                imgObj.put("link", imgUrl);
-                imgObj.put("provider_name", "LivefyreFilePicker");
-                imgObj.put("thumbnail_url", imgUrl);
-                imgObj.put("type", "photo");
-                imgObj.put("url", imgUrl);
-                try {
-                    progressBar.setVisibility(View.VISIBLE);
-                    Picasso.with(getBaseContext()).load(imgUrl).fit().into(capturedImage, new ImageLoadCallBack());
-                } catch (Exception e) {
-e.printStackTrace();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+        showToast("FilePicker feature has been removed.so no result should bee expected");
+//        if (requestCode == FilePickerAPI.REQUEST_CODE_GETFILE) {
+//            if (resultCode != RESULT_OK) {
+//                // Result was cancelled by the user or there was an error
+//                showAlert("No Image Selected.", "SELECT IMAGE", selectImageDialogAction);
+//                attachImageLL.setVisibility(View.VISIBLE);
+//                attacheImageFL.setVisibility(View.GONE);
+//                return;
+//            }
+//            attachImageLL.setVisibility(View.GONE);
+//            attacheImageFL.setVisibility(View.VISIBLE);
+//
+//            String imgUrl = data.getExtras().getString("fpurl");
+//            application.printLog(true, TAG + "Uploaded Image URL", imgUrl + " ");
+//            try {
+//                imgObj = new JSONObject();
+//                imgObj.put("link", imgUrl);
+//                imgObj.put("provider_name", "LivefyreFilePicker");
+//                imgObj.put("thumbnail_url", imgUrl);
+//                imgObj.put("type", "photo");
+//                imgObj.put("url", imgUrl);
+//                try {
+//                    progressBar.setVisibility(View.VISIBLE);
+//                    Picasso.with(getBaseContext()).load(imgUrl).fit().into(capturedImage, new ImageLoadCallBack());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     private class ImageLoadCallBack implements Callback {
